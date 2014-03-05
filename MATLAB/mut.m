@@ -7,20 +7,23 @@ function m=mut(s,t,varargin)
 %   'var' for variance
 %   'skw' for skewness
 %   'kur' for kurtosis
+%   'mom' for standarded moment, then specify an order (1 by default)
 % This mutation is done on a moving window of length 'w' (100 by default)   
 % with an overlap 'o' (0.75 by default)
 p=inputParser;
-addRequired(p,'s');
+addRequired(p,'s',@isnumeric);
 addParameter(p,'w',100,@isnumeric);
 addParameter(p,'o',.75,@isnumeric);
 addParameter(p,'L',[]);
 addRequired(p,'t',@(x) any(validatestring(x,...
-    {'std','amp','moy','pap','var','skw','cor','kur'})));
+    {'std','amp','moy','pap','var','skw','cor','kur','mom'})));
+addParameter(p,'order',1,@isnumeric);
 
 parse(p,s,t,varargin{:});
 w=p.Results.w;
 o=p.Results.o;
 L=p.Results.L;
+order=p.Results.order;
 
 offset=floor(w*(1-o));
 n=floor((length(s(:,1))-w)/offset);	% Number of std to do
@@ -50,6 +53,10 @@ for j=2:p
             m(i,j)=kurtosis(s(1+(i-1)*offset:1+(i-1)*offset+w,j+1));
         elseif t=='cor'
             m(i,j)=corr(s(1+(i-1)*offset:1+(i-1)*offset+w,j+1));
+        elseif t=='mom'
+            m(i,j)=moment((s(1+(i-1)*offset:1+(i-1)*offset+w,j+1)-...
+                mean(s(1+(i-1)*offset:1+(i-1)*offset+w,j+1)))...
+                /std(s(1+(i-1)*offset:1+(i-1)*offset+w,j+1)),order);
         end
     end
 end
