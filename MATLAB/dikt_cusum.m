@@ -33,11 +33,11 @@ for i=1:nstep
                
            end
        
-       elseif strcmp(weight,'none')
+       elseif strcmp(weigth,'none')
            
            if times(j+1)-times(j)>2
               
-               [g,t]=gaussian_loglikelihood_ratio(y(times(j):times(j+1),:),par);
+               [g,t]=max(gaussian_loglikelihood_ratio(y(times(j):times(j+1),:),par));
                
            end
            
