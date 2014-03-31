@@ -33,7 +33,7 @@ mu_1=mean(y,1);
 sigma_0=std(y,1);
 sigma_1=std(y,1);
 
-for j=start:k
+for j=start:k-start
     if strcmp(par,'both')
         sigma_0=std(y(1:j-1,:),1);
         mu_0=mean(y(1:j-1,:),1);
@@ -47,7 +47,7 @@ for j=start:k
         sigma_1=std(y(j:k,:),1);
     end
     % This is an already simplified expression
-    S(j)=(k-j+1)*sum(log(sigma_0 ./ sigma_1)) ...
+    S(j)=%(k-j+1)*sum(log(sigma_0 ./ sigma_1)) ...
         -.5*sum(sum( ...
         ( (y(j:k,:) - repmat(mu_1,k-j+1,1)) ./ repmat(sigma_1,k-j+1,1) ).^2 ...
         - ( (y(j:k,:) - repmat(mu_0,k-j+1,1)) ./ repmat(sigma_0,k-j+1,1) ).^2 ...
