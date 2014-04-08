@@ -50,13 +50,20 @@
 
 \begin{frame}
 	\frametitle{L'expérience et son acquisition}
+    \begin{minipage}{0.59\textwidth}
+      	\begin{itemize}
+			\item[Trajet] du patient : 
+			\item environ 6 secondes à l'arrêt
+			\item marche sur 10 mètres
+			\item demi-tour
+			\item marche sur 10 mètres
+		\end{itemize}
+    \end{minipage}
+    \begin{minipage}{0.39\textwidth}
+   		\hspace*{-1.13cm}\includegraphics[scale=.95]{capteurs}
+    \end{minipage}
+    
 	\begin{itemize}
-		\item[Trajet] du patient : 
-		\item environ 6 secondes à l'arrêt
-		\item marche sur 10 mètres
-		\item demi-tour
-		\item marche sur 10 mètres
-
 		\item[Capture] des signaux par des centrales inertielles : 
 		\item on s'intéresse à ceux fixées à la ceinture et au pied droit
 		\item accélérations et vitesses angulaires
@@ -67,9 +74,9 @@
 
 \begin{frame}
 	\frametitle{Les capteurs}
+	
 
-		\hspace*{-1.3cm}\includegraphics[scale=1.9]{capteurs.eps}
-
+	
 \end{frame}
 
 \begin{frame}
@@ -89,7 +96,7 @@
 \begin{frame}
 	\frametitle{Exemple d'acquisition 2 - Ceinture}
 
-			\hspace*{-2.75cm}\includegraphics[scale=0.40]{errorexamplevisuback}
+	\hspace*{-2.75cm}\includegraphics[scale=0.40]{errorexamplevisuback}
 
 \end{frame}
 
@@ -125,15 +132,19 @@
 	\begin{itemize}
 		\item[Biblio] \emph{Detection of Abrupt Changes : Theory and Application},\\
 		M. Basseville, I. V. Nikiforov (1993)
-		\item[Proposé] par E. S. Page dans \emph{Continuous inspection scheme} (1954)
-		\item[Comparer] la meilleure hypothèse d'un changement de paramètre à la meilleure hypothèse stationnaire
-		\item[Utilise] la vraisemblance logarithmique relative des hypothèses
+		\item[Proposé] dans \emph{Continuous inspection scheme}, E.S. Page (1954)
+		\item[Comparer] l'hypothèse d'un changement à l'hypothèse stationnaire
 	\end{itemize}
 	\begin{equation}
-		L _k =\ln \left[ \frac{\sup_{\theta_0}\prod_{i=1}^{k-1} p_{\theta_0}(y_i)\cdot\sup_{\theta_1}\prod_{i = k}^{N}p_{\theta_1}(y_i)}{\sup_{\tilde\theta}\prod_{i=i}^{N}p_{\tilde{\theta}}(y_i)} \right]
+		L _k =\ln \left[ \frac{\sup_{\theta_0}\left\{ \prod_{i=1}^{k-1} p_{\theta_0}(y_i) \right\} \cdot \sup_{\theta_1} \left\{ \prod_{i = k}^{N}p_{\theta_1}(y_i) \right\}}{\sup_{\tilde\theta}\left\{\prod_{i=i}^{N}p_{\tilde{\theta}}(y_i)\right\}} \right]
 	\end{equation}
 	\begin{itemize}
-		\item[Rupture] au temps de vraisemblance maximale si dépasse un seuil
+		\item[Rupture] au temps de vraisemblance logarithmique maximale si dépasse un seuil
+	\end{itemize}
+	\begin{equation}
+		\max_{1 \leq k \leq N} L_k \geq h \Rightarrow t_0 = \arg \max_{1 \leq k \leq N} L_k
+	\end{equation}
+	\begin{itemize}
 		\item[Complexité] élevée avec les bornes supérieures : besoin de simplification
 	\end{itemize}
 \end{frame}
@@ -142,9 +153,7 @@
 
 \begin{frame}
 	\frametitle{Le choix du gaussien}
-	\begin{itemize}
-		\item[Signaux] supposés suivre une distribution normale :
-	\end{itemize}
+	Signaux supposés suivre une distribution normale :
 	\begin{equation}
 		p_{\mu, \sigma}(y) = \frac1{\sigma\sqrt{2 \pi}} \exp \left[ -\frac12 \left( \frac{y - \mu}{\sigma} \right)^2 \right]
 	\end{equation}
@@ -158,35 +167,33 @@
 \begin{frame}
 	\frametitle{Choix des paramètres - Formules correspondantes}
 	Trois choix possibles :
+	\vspace*{.3cm}
 	\begin{itemize}
-		\item[$\theta=\mu$]: on utilise (3) avec $\mu=\frac1n\sum_{i=1}^ny_i$ et $\sigma$ fixé
-		\vspace*{.1cm}
-		\item[$\theta=\sigma$]:  on utilise (4) avec $\mu$ fixé et $\sigma=\frac1n\sum_{i=1}^n(y_i-\mu)^2$
-		\vspace*{.1cm}
-		\item[$\theta=(\mu,\theta)$]: on utilise (4) avec $\mu=\frac1n\sum_{i=1}^ny_i$ et\\
-		\hspace*{5.5cm}\mbox{$\sigma=\frac1n\left[\sum_{i=1}^ny_i^2-(\sum_{i=1}^ny_i)^2\right]$}
+		\item[$\theta=\mu$]: (4) avec $\mu=\frac1n\sum_{i=1}^ny_i$ et $\sigma$ fixé
+		\vspace*{.2cm}
+		\item[$\theta=\sigma$]:  (5) avec $\mu$ fixé et $\sigma=\frac1n\sum_{i=1}^n(y_i-\mu)^2$
+		\vspace*{.2cm}
+		\item[$\theta=(\mu,\theta)$]: (5) avec \mbox{$\mu=\frac1n\sum_{i=1}^ny_i$ et $\sigma=\frac1n\left[\sum_{i=1}^ny_i^2-(\sum_{i=1}^ny_i)^2\right]$}
 	\end{itemize}
-	\vspace*{1cm}
+	\vspace*{0.8cm}
 	\begin{equation}
 	\hspace{-1cm}	L_k=\frac 1{2\sigma^2}\left[(k-1)\mu_0^2+(N-k+1)\mu_1^2-N\tilde\mu^2\right]
 	\end{equation}
+	ou
 	\begin{equation}
 	\hspace{-1cm}	L_k=N\ln(\tilde\sigma)-(k-1)\ln(\sigma_0)-(N-k+1)\ln(\sigma_1)
 	\end{equation}
 \end{frame}
 
-
-
-
 \subsection{Premiers résultats}
 
 \begin{frame}
-	\frametitle{Une segmentation}
+	\frametitle{Dichotomie sur les normes des accélérations et la rotation propre du dos}
 	\hspace*{-2.8cm}\includegraphics[scale=0.4]{examplecusumbackvertgyr}
 \end{frame}
 
 \begin{frame}
-	\frametitle{Une segmentation}
+	\frametitle{Segmentation sur un signal imparfait}
 	\hspace*{-2.8cm}\includegraphics[scale=0.4]{errorexamplecusum}
 \end{frame}
 
@@ -195,11 +202,13 @@
 \begin{frame}
 	\frametitle{Et maintenant ?}
 	\begin{itemize}
+		\item[Finaliser] la segmentation et la valider
+		\vspace*{1cm}
 		\item[Travail] sur les segments : différencier et détecter les différents types de maladies
 		\item[$\Longrightarrow$] machine learning sur les segments obtenus
 		\vspace*{1cm}
 		\item[CUSUM] à généraliser sur des signaux quelconques
-		\item[$\Longrightarrow$] adaptation du seuillage, des hypothèses
+		\item[$\Longrightarrow$] adaptation du seuillage, hypothèses moins simplificatrices
 	\end{itemize}
 \end{frame}
 
