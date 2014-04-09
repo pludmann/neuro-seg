@@ -13,7 +13,7 @@ for i=1:nstep
        
        if times(j+1)-times(j)>2
            
-           [g,t]=max(MLEt0hat(y(times(j):times(j+1),:),par));
+           [g,t]=max(gauss_mle(y(times(j):times(j+1),:),par));
            values=[values,g];
            times=[times,times(j)+t-1];
            
