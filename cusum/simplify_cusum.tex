@@ -5,6 +5,7 @@
 \usepackage{amsfonts,amsmath,amssymb}
 \title{\textbf{How to CUSUM under normal distribution}}
 \author{Pierre Ludmann}
+\usepackage{graphicx}
 
 \begin{document}
 
@@ -17,7 +18,7 @@ Set
 where the $y_i$ are the $i$th observation of $N$.
 And
 \[L=\max_{1\le k\le N}L_k\]
-If \[L>h\] with $h$ a certain threshold then there is a rupture in \[t_0=\arg\max_{1\le k\le N}L_k\]
+If \[L\ge h\] with $h$ a certain threshold then there is a rupture in \[t_0=\arg\max_{1\le k\le N}L_k\]
 
 A interpretation of this whole formula is quite simple : trying to get the best distribution assuming there is a change, if the maximal difference is significant the hypothesis test is passed at the time of maximum.
 
@@ -91,6 +92,26 @@ It is already well-simplified but the abstract factor $\sigma$ remains so we wil
 
 \[L_k=N\ln(\tilde\sigma)-(k-1)\ln(\sigma_0)-(N-k+1)\ln(\sigma_1)\]
 
-Amazingly, there is no difference between expecting a change in variance or in variance and mean.
+Amazingly, there is no such difference between expecting a change in variance or in variance and mean.
+
+\section{When stop}
+
+One could procede by recursive dichotomy. So the question is : should I stop when don't reach the threshold? That is to say :
+\[\text{If }L_{t_0}< h\text{ then }\max_{1\le k\le t_0}L'_k< h\text{ and }\max_{t_0\le k\le N}L''_k< h\]
+where $t_0=\arg\max_{1\le k\le N}L_k$, $L'_k$ and $L''_k$ is the log-likelihood ratio about each side of $t_0$.
+
+It will be true for any threshold \underline{iff}
+\[L_{t_0}\ge\max_k\left\{L'_k,L''_k\right\}\]
+Unfortunately it is merely false according the following signals :
+
+\subsection{Mean change}
+
+\includegraphics{stopmean0}
+\hspace*{-5.3cm}\includegraphics[width=0.89\linewidth]{stopmean1}
+\includegraphics[width=0.89\linewidth]{stopmean2}
+
+\subsection{Standard-deviation change}
+
+  
 
 \end{document}
