@@ -17,7 +17,6 @@ function [times,values]=cusum_seg(filename_back,filename_foot,rupt,varargin)
 p=inputParser;
 addRequired(p,'filename_back',@isstr);
 addRequired(p,'filename_foot',@isstr);
-addParameter(p,'nstep',-1,@isnumeric);
 addParameter(p,'hperc',0,@(x) (0<=x)&&(x<=100));
 addParameter(p,'par','both',@(x) any(validatestring(x,{'std','mean','both'})));
 addParameter(p,'plt','b',@(x) any(validatestring(x,{'y','n','b'})));
@@ -27,7 +26,7 @@ hperc=p.Results.hperc;
 par=p.Results.par;
 plt=p.Results.plt;
 rupt=p.Results.rupt;
-nstep=p.Results.nstep;
+nstep=rupt;
 
 [back_acc,back_gyr,fs_back]=import_csv_xsens(filename_back);
 [foot_acc,foot_gyr,fs_foot]=import_csv_xsens(filename_foot);
@@ -38,23 +37,13 @@ vert_back_gyr=back_gyr(:,3);
 
 y=[back_acc_norm , foot_acc_norm, vert_back_gyr];
 
-if nstep==-1
-    nstep=log2(ceil(size(y,1)));
-end
-
 [times,values]=dikt_cusum(y,par,nstep);
+[times,values]=max_heap(times,values,rupt);
 
+times=times(1:rupt);
+values=values(1:rupt);
 timeline_back=(1:size(back_gyr,1))/fs_back;
-times(values<(hperc/100)*max(values))=[];
 times=timeline_back(times);
-values(values<(hperc/100)*max(values))=[];
-
-[values,ix]=sort(values);
-times=times(ix);
-values=values(max(1,length(values)-rupt+1):length(values));
-times=times(max(1,length(times)-rupt+1):length(times));
-[times,ix]=sort(times);
-values=values(ix);
 
 if plt=='y' || plt=='b'
     

@@ -15,76 +15,113 @@ parse(p,y,par,nstep,varargin{:});
 mu=p.Results.mu;
 sigma=p.Results.sigma;
 
-times=[1,size(y,1)+1];
-values=[0,0];
+N=size(y,1);
+
+times=zeros(2^(nstep)-1,1);
+values=-Inf*ones(2^(nstep)-1,1);
 
 if strcmp(par,'mean')
+    
+    [g,t]=max(gauss_mle(y(1:N,:),par,'sigma',sigma));
+    values(1)=g;
+    times(1)=t;
+    
+    for n=2:nstep
         
-    for i=1:nstep
+        fstrw=2^(n-1);
         
-        for j=1:length(times)-1
-            
-            if times(j+1)-times(j)>2
-                
-                [g,t]=max(gauss_mle(y(times(j):times(j+1)-1,:),par,'sigma',sigma));
-                values=[values,g];
-                times=[times,times(j)+t-1];
-                
+        for k=0:(fstrw-1)
+
+            if k==0 && times(fstrw/2)>3
+                [g,t]=max(gauss_mle(y(1:times(fstrw/2) -1,:),par,'sigma',sigma));
+                values(fstrw+k)=g;
+                times(fstrw+k)=t;
+            elseif k==fstrw-1 && N-2>times(fstrw-1) && times(fstrw-1)>1
+                [g,t]=max(gauss_mle(y(times(fstrw-1):N,:),par,'sigma',sigma));
+                values(fstrw+k)=g;
+                times(fstrw+k)=times(fstrw-1) +t -1;
+            elseif n>2 && mod(k,2)==0 && times(fstrw/2+k/2)-times(fstrw/4+floor(k/4))>2 && times(fstrw/4+floor(k/4))>0
+                [g,t]=max(gauss_mle(y(times(fstrw/4+floor(k/4)):times(fstrw/2+k/2) -1,:),par,'sigma',sigma));
+                values(fstrw+k)=g;
+                times(fstrw+k)=times(fstrw/2+floor(k/4)) +t -1;
+            elseif n>2 && mod(k,2)==1 && -times(fstrw/2+floor(k/2))+times(fstrw/4+floor(k/4))>2 && times(fstrw/2+floor(k/2))>0
+                [g,t]=max(gauss_mle(y(times(fstrw/2+floor(k/2)):times(fstrw/4+floor(k/4)) -1,:),par,'sigma',sigma));
+                values(fstrw+k)=g;
+                times(fstrw+k)=times(fstrw+floor(k/2)) +t -1;
             end
             
         end
         
-        [times, ix]=sort(times);
-        values=values(ix);
-        
-    end
+    end    
     
 elseif strcmp(par,'std')
     
-    for i=1:nstep
+    [g,t]=max(gauss_mle(y(1:N,:),par,'mu',mu));
+    values(1)=g;
+    times(1)=t;
+    
+    for n=2:nstep
         
-        for j=1:length(times)-1
-            
-            if times(j+1)-times(j)>2
-                
-                [g,t]=max(gauss_mle(y(times(j):times(j+1)-1,:),par,'mu',mu));
-                values=[values,g];
-                times=[times,times(j)+t-1];
-                
+        fstrw=2^(n-1);
+        
+        for k=0:(fstrw-1)
+
+            if k==0 && times(fstrw/2)>3
+                [g,t]=max(gauss_mle(y(1:times(fstrw/2) -1,:),par,'mu',mu));
+                values(fstrw+k)=g;
+                times(fstrw+k)=t;
+            elseif k==fstrw-1 && N-2>times(fstrw-1) && times(fstrw-1)>1
+                [g,t]=max(gauss_mle(y(times(fstrw-1):N,:),par,'mu',mu));
+                values(fstrw+k)=g;
+                times(fstrw+k)=times(fstrw-1) +t -1;
+            elseif n>2 && mod(k,2)==0 && times(fstrw/2+k/2)-times(fstrw/4+floor(k/4))>2 && times(fstrw/4+floor(k/4))>0
+                [g,t]=max(gauss_mle(y(times(fstrw/4+floor(k/4)):times(fstrw/2+k/2) -1,:),par,'mu',mu));
+                values(fstrw+k)=g;
+                times(fstrw+k)=times(fstrw/2+floor(k/4)) +t -1;
+            elseif n>2 && mod(k,2)==1 && -times(fstrw/2+floor(k/2))+times(fstrw/4+floor(k/4))>2 && times(fstrw/2+floor(k/2))>0
+                [g,t]=max(gauss_mle(y(times(fstrw/2+floor(k/2)):times(fstrw/4+floor(k/4)) -1,:),par,'mu',mu));
+                values(fstrw+k)=g;
+                times(fstrw+k)=times(fstrw+floor(k/2)) +t -1;
             end
             
         end
         
-        [times, ix]=sort(times);
-        values=values(ix);
-        
     end
-
-else
     
+elseif strcmp(par,'both')
     
-    for i=1:nstep
+    [g,t]=max(gauss_mle(y(1:N,:),par));
+    values(1)=g;
+    times(1)=t;
+    
+    for n=2:nstep
         
-        for j=1:length(times)-1
-            
-            if times(j+1)-times(j)>2
-                
-                [g,t]=max(gauss_mle(y(times(j):times(j+1)-1,:),par));
-                values=[values,g];
-                times=[times,times(j)+t-1];
-                
+        fstrw=2^(n-1);
+        
+        for k=0:(fstrw-1)
+
+            if k==0 && times(fstrw/2)>3
+                [g,t]=max(gauss_mle(y(1:times(fstrw/2) -1,:),par));
+                values(fstrw+k)=g;
+                times(fstrw+k)=t;
+            elseif k==fstrw-1 && N-2>times(fstrw-1) && times(fstrw-1)>1
+                [g,t]=max(gauss_mle(y(times(fstrw-1):N,:),par));
+                values(fstrw+k)=g;
+                times(fstrw+k)=times(fstrw-1) +t -1;
+            elseif n>2 && mod(k,2)==0 && times(fstrw/2+k/2)-times(fstrw/4+floor(k/4))>2 && times(fstrw/4+floor(k/4))>0
+                [g,t]=max(gauss_mle(y(times(fstrw/4+floor(k/4)):times(fstrw/2+k/2) -1,:),par));
+                values(fstrw+k)=g;
+                times(fstrw+k)=times(fstrw/2+floor(k/4)) +t -1;
+            elseif n>2 && mod(k,2)==1 && -times(fstrw/2+floor(k/2))+times(fstrw/4+floor(k/4))>2 && times(fstrw/2+floor(k/2))>0
+                [g,t]=max(gauss_mle(y(times(fstrw/2+floor(k/2)):times(fstrw/4+floor(k/4)) -1,:),par));
+                values(fstrw+k)=g;
+                times(fstrw+k)=times(fstrw+floor(k/2)) +t -1;
             end
             
         end
         
-        [times, ix]=sort(times);
-        values=values(ix);
-        
     end
-
+    
 end
-
-times=times(2:length(times)-1);
-values=values(2:length(values)-1);
 
 end
