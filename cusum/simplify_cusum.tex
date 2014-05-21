@@ -37,10 +37,10 @@ Notice $F$ is coercive whatever $\theta$ so a mere differential give the sup :
 
 If $\theta=\mu$ then $\hat\mu=\frac 1n\sum_{i=1}^ny_i$\\
 
-If $\theta=\sigma$ then $\hat\sigma=\frac 1n\sum_{i=1}^n(y_i-\mu)^2$ ~~~~where $\mu$ is a set constant\\
+If $\theta=\sigma$ then $\hat\sigma=\sqrt{\frac 1n\sum_{i=1}^n(y_i-\mu)^2}$ ~~~~where $\mu$ is a set constant\\
 
 If $\theta=(\mu,\sigma)$ then $\begin{cases}\hat\mu=\frac 1n\sum_{i=1}^ny_i\\
-\hat\sigma=\frac 1n\left[\sum_{i=1}^ny_i^2-(\sum_{i=1}^ny_i)^2\right]\end{cases}$
+\hat\sigma=\sqrt{\frac 1n\left[\sum_{i=1}^ny_i^2-(\sum_{i=1}^ny_i)^2\right]}\end{cases}$
 
 \section{Simplify $L_k$ expression}
 
@@ -77,6 +77,11 @@ It is already well-simplified but the abstract factor $\sigma$ remains so we wil
 
 \[L_k=N\ln(\tilde\sigma)-(k-1)\ln(\sigma_0)-(N-k+1)\ln(\sigma_1)\]
 
+
+If $\sigma_0$ occurs to be zero when $k=2$ replace $-(k-1)\ln(\sigma_0)$ with $\frac12+\frac12\ln(2\pi)$.
+\emph{Idem} with $\sigma_1$ for its term when $k=N$.
+Else, you are facing a piece of straight line.
+
 \subsection{Both change}
 
 \[L_k=
@@ -92,6 +97,9 @@ It is already well-simplified but the abstract factor $\sigma$ remains so we wil
 
 \[L_k=N\ln(\tilde\sigma)-(k-1)\ln(\sigma_0)-(N-k+1)\ln(\sigma_1)\]
 
+When $k=2$ replace $-(k-1)\ln(\sigma_0)$ with $\frac12+\frac12\ln(2\pi)$.
+\emph{Idem} when $k=N$ for $\sigma_1$ term.
+
 Amazingly, there is no such difference between expecting a change in variance or in variance and mean.
 
 \section{When stop}
@@ -102,16 +110,23 @@ where $t_0=\arg\max_{1\le k\le N}L_k$, $L'_k$ and $L''_k$ is the log-likelihood 
 
 It will be true for any threshold \underline{iff}
 \[L_{t_0}\ge\max_k\left\{L'_k,L''_k\right\}\]
+
 Unfortunately it is merely false according the following signals :
 
 \subsection{Mean change}
+
+
 
 \includegraphics{stopmean0}
 \hspace*{-5.3cm}\includegraphics[width=0.89\linewidth]{stopmean1}
 \includegraphics[width=0.89\linewidth]{stopmean2}
 
 \subsection{Standard-deviation change}
+	
+Take $\mathcal N(0,1.9053\cdot10^{-6})$ for the first thousand samples, then $\mathcal N(0,365.41)$ for the following hundred and finally $\mathcal N(0,1.5599\cdot10^{-6})$ for the last thousand
 
-  
+\subsection{Both change}
+
+\emph{Idem}
 
 \end{document}
