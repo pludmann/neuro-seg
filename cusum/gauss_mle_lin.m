@@ -1,34 +1,19 @@
 function L=gauss_mle_lin(y,par,varargin)
+
+%   Give it an univariate signal (as a column double vector), a parameter (as a
+% string among 'mean', 'std', 'both').
 %
-%   Giving a matrix y such as the N lines y_i are observations of p
-% independent variables (at time i).
+%   Optionnal parameter (varargin) :
 %
-%   This function returns the sequence of maximum log-likelihoood ratio
-% estimated, a row vector L such as
+% If 'mean' was given then to follow
+% 	'sigma',sigmavalue
+% where 'sigma' is actually the string 'sigma' and sigmavalue is the (assumed or
+% not) standard deviation (as a double value).
 %
-%   \[L_k=\ln\left[\frac
-%         {\sup_{\theta_0}\left\{\prod_{i=1}^{k-1}p_{\theta_0}(y_i)\right\}
-%        \cdot\sup_{\theta_1}\left\{\prod_{i=k}^Np_{\theta_1}(y_i)\right\}}
-%           {\sup_{\tilde\theta}p_{\tilde\theta}(y_i)}\right]\]
-%
-% where N is the number of observations and p_\theta the gaussian density
-% function parametered by \theta.
-%   And theta_0, theta_1 the gaussian distribution parameters resp. before
-% and after the rupture at time k. That is to say the mean, the standard
-% deviation or both from 1 to k-1 and from k to N.
-%
-%   If the second argument is mean or std, the missing parameters are
-% computed on the whole signal but it is better -- you must -- to input
-% them.
-%
-%   Note if the mean is the parameter, the formula is simplified into
-%
-%   \[L_k=\frac 1{2\sigma^2}\left[(k-1)\mu_0^2+(N-k+1)\mu_1^2
-%           -N\tilde\mu^2\right]\]
-%
-%   Otherwise
-%
-%   \[L_k=N\ln(\tilde\sigma)-(k-1)\ln(\sigma_0)-(N-k+1)\ln(\sigma_1)\]
+% If 'std' was given then to follow
+% 	'mu',muvalue
+% where 'mu' is actually the string 'mu' and muvalue is the (assumed or not)
+% mean (as a double value).
 
 p = inputParser ;
 addRequired(p, 'y') ;
