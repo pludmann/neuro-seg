@@ -1,4 +1,4 @@
-function [times,values]=cusum_seg_lin(filename_back,filename_foot,par,rupt,varargin)
+function [times,values]=cusum_seg_lin(filename,par,rupt,varargin)
 
 % Giving two associated cognac-g signal 'filename_back' and
 % 'filename-foot', extract them from .csv to variables. Then produce the
@@ -14,6 +14,9 @@ function [times,values]=cusum_seg_lin(filename_back,filename_foot,par,rupt,varar
 % If you don't want a graphic output, ask 'plt','n'. Ask 'plt','y' for
 % graphic results on original signals.
 
+filename_back=strcat(char(filename),'-Xsens-Ceinture.csv');
+filename_foot=strcat(char(filename),'-Xsens-Pied Droit.csv');
+
 [back_acc,back_gyr,fs_back]=import_csv_xsens(filename_back);
 [foot_acc,foot_gyr,fs_foot]=import_csv_xsens(filename_foot);
 back_acc_norm=sqrt(back_acc(:,1).^2+back_acc(:,2).^2+back_acc(:,3).^2);
@@ -24,15 +27,14 @@ y=[back_acc_norm , foot_acc_norm, vert_back_gyr];
 N = size(y, 1) ;
 
 p=inputParser;
-addRequired(p,'filename_back',@isstr);
-addRequired(p,'filename_foot',@isstr);
+addRequired(p,'filename',@iscellstr);
 addRequired(p,'par');
 addParameter(p,'plt','b',@(x) any(validatestring(x,{'y','n','b'})));
 addRequired(p,'rupt',@isnumeric);
 addParameter(p,'mu',mean(y,1),@isnumeric) ;
 addParameter(p,'sigma',std(y,1),@isnumeric) ;
 addParameter(p, 'coef', ones(N, 1), @isnumeric) ;
-parse(p,filename_back,filename_foot,par,rupt,varargin{:});
+parse(p,filename,par,rupt,varargin{:});
 plt=p.Results.plt;
 rupt=p.Results.rupt;
 mu = p.Results.mu ;
