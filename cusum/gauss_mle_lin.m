@@ -39,7 +39,7 @@ else
     mu_0 = 0 ;
     mu_1 = mutilde ;
     var_0 = 0 ;
-    var_1 = sigmatilde^2 ;
+    var_1 = mean((y-mutilde).^2) ;
     mom2_0 = 0 ;
     mom2_1 = mean(y.^2) ;
     
