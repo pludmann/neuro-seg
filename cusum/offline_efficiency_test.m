@@ -1,4 +1,4 @@
-function [sumdiff, N, times, values] = efficiency_test(n,p,c,plt)
+function [sumdiff, N, P, diff, np, values] = offline_efficiency_test(n,p,c,plt)
 
 %[sumdiff, N] = efficiency_test(n,p,c) génère un signal aléatoire à n
 %ruptures à partir de (n+1) lois normales centrées, avec p points entre 
@@ -10,18 +10,20 @@ function [sumdiff, N, times, values] = efficiency_test(n,p,c,plt)
 %
 %Deux ruptures sont considérées comme doubles ssi l'écart entre les deux
 %est plus petit que p/100.
-%Une rupture est considérée comme valide ssi l'écart théorie/CUSUM est
-%inférieur à p/10.
+
     Y = zeros((n+1)*p,1);
     nt = zeros(1, n);
     diff = zeros(1, n);
     N = 0;
+    P = 0;
+    isokay = false;
+    isdouble = false;
     
     for k = 1:(n+1)
         Y((p*(k-1)+1):p*k,1) = (c^k)*randn(p,1);
     end
     
-    [times, values] = dikt_cusum_lin(Y, {'both'}, n);
+    [times, values] = dikt_cusum_lin(Y, {'std'}, n);
     np = sort(times, 'ascend');
     
     if (plt == true)
@@ -30,20 +32,30 @@ function [sumdiff, N, times, values] = efficiency_test(n,p,c,plt)
         hold on
     end
     
-
     for k = 1:n
         nt(k) = p*k;
         if (plt == true)
             line([nt(k), nt(k)], [min(Y), max(Y)], 'Color', [0; 0.8; 0]);
-            line([times(k), times(k)], [min(Y), max(Y)], 'Color', 'r');     
+            line([np(k), np(k)], [min(Y), max(Y)], 'Color', 'r');     
         end
-        if (k == 1)
-            diff(k) = (nt(k) - np(k))^2;
-        else
-            diff(k) = (nt(k) - np(k))^2;
-            if (abs(np(k-1) - np(k)) <= p/10)
+        diff(k) = (nt(k) - np(k))^2;
+        if (k > 1)
+            if (abs(np(k-1) - np(k)) <= p/5)
                 N = N+1;
+                isdouble = true;
+            else
+                isdouble = false;
             end
+        end
+        if (isdouble == false) || (isokay == false)
+            if (((abs(mod(np(k),100) - p) <= p/10) || ((abs(mod(np(k),100)) <= p/10))) && ((np(k) > 10) && (np(k) < 1090)))
+                P = P+1;
+                isokay = true;
+            else
+                isokay = false;
+            end
+        else
+            isokay = false;
         end
     end
     if (plt == true)

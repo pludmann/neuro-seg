@@ -22,6 +22,6 @@ while 1
     if newtime==0
         return
     end
-    lastime=newtime+lastime
+    lastime=newtime+lastime;
     times=[times,lastime];
 end
