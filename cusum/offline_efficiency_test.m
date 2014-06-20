@@ -1,4 +1,4 @@
-function [sumdiff, N, P, diff] = offline_efficiency_test(n,p,c,plt)
+function [sumdiff, N, P, diff, np] = offline_efficiency_test(n,p,c,plt)
 
 %[sumdiff, N, P, diff] = offline_efficiency_test(n,p,c,plt) génère un signal aléatoire à n
 %ruptures à partir de (n+1) lois normales centrées, avec p points entre 
@@ -25,7 +25,7 @@ function [sumdiff, N, P, diff] = offline_efficiency_test(n,p,c,plt)
         Y((p*(k-1)+1):p*k,1) = (c^k)*randn(p,1);
     end
     
-    [times, values] = dikt_cusum_lin(Y, {'std'}, n);
+    times = dikt_cusum_lin(Y, {'std'}, n);
     np = sort(times, 'ascend');
     
     if (plt == true)
@@ -50,7 +50,7 @@ function [sumdiff, N, P, diff] = offline_efficiency_test(n,p,c,plt)
             end
         end
         if (isdouble == false) || (isokay == false)
-            if (((abs(mod(np(k),100) - p) <= p/10) || ((abs(mod(np(k),100)) <= p/10))) && ((np(k) > 10) && (np(k) < 1090)))
+            if (((abs(mod(np(k),p) - p) <= p/10) || ((abs(mod(np(k),p)) <= p/10))) && ((np(k) > p/10) && (np(k) < (n+1)*p-p/10)))
                 P = P+1;
                 isokay = true;
             else

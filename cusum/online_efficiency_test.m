@@ -1,4 +1,4 @@
-function [sumdiff, N, P, diff] = online_efficiency_test(n,p,c,thresh,plt)
+function [sumdiff, N, P, diff, np] = online_efficiency_test(n,p,c,thresh,plt)
 
 %[sumdiff, N, p, diff] = online_efficiency_test(n,p,c,thresh,plt) génère un signal
 %à n ruptures à partir de (n+1) lois normales centrées, avec p points entre 
@@ -15,6 +15,7 @@ function [sumdiff, N, P, diff] = online_efficiency_test(n,p,c,thresh,plt)
 
     Y = zeros((n+1)*p,1);
     nt = zeros(1, n);
+    np = zeros(1, n);
     diff = zeros(1, n);
     N = 0;
     P = 0;
@@ -26,7 +27,7 @@ function [sumdiff, N, P, diff] = online_efficiency_test(n,p,c,thresh,plt)
     end
     
     times = all_online(Y, {'std'}, thresh);
-    np = sort(times, 'ascend');
+    np(1, 1:(size(times,2))) = sort(times, 'ascend');
     
     if (plt == true)
         figure;
@@ -50,7 +51,7 @@ function [sumdiff, N, P, diff] = online_efficiency_test(n,p,c,thresh,plt)
             end
         end
         if (isdouble == false) || (isokay == false)
-            if (((abs(mod(np(k),100) - p) <= p/10) || ((abs(mod(np(k),100)) <= p/10))) && ((np(k) > 10) && (np(k) < 1090)))
+            if (((abs(mod(np(k),p) - p) <= p/10) || ((abs(mod(np(k),p)) <= p/10))) && ((np(k) > p/10) && (np(k) < (n+1)*p-p/10)))
                 P = P+1;
                 isokay = true;
             else
