@@ -18,7 +18,7 @@ coef=p.Results.coef;
 times=[];
 lastime=1;
 while 1
-    newtime=find_online(y(lastime:N,:),par,thresh,'mu',mu,'sigma',sigma,'coef',coef);
+    newtime=next_online(y(lastime:N,:),par,thresh,'mu',mu,'sigma',sigma,'coef',coef);
     if newtime==0
         return
     end
