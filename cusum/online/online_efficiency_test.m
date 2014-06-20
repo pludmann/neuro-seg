@@ -1,6 +1,6 @@
-function [m, N, P, diff, sumdiff, np] = online_efficiency_test(n, p, c, thresh, plt)
+function [m, N, P, sumdiff, diff, np] = online_efficiency_test(n, p, c, thresh, plt)
 
-%[m, N, P, diff, sumdiff, np] = online_efficiency_test(n,p,c,thresh,plt)
+%[m, N, P, sumdiff, diff, np] = online_efficiency_test(n,p,c,thresh,plt)
 %génère un signal à n ruptures à partir de (n+1) lois normales centrées,
 %avec p points entre deux ruptures, où une rupture correspond à une
 %augmentation de c de l'écart-type. On obtient alors une figure

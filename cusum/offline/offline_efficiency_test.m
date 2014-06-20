@@ -1,6 +1,6 @@
-function [N, P, diff, sumdiff, np] = offline_efficiency_test(n, p, c, plt)
+function [N, P, sumdiff, diff, np] = offline_efficiency_test(n, p, c, plt)
 
-%[N, P, diff, sumdiff, np] = offline_efficiency_test(n,p,c,plt) génère un
+%[N, P, sumdiff, diff, np] = offline_efficiency_test(n,p,c,plt) génère un
 %signal aléatoire à n ruptures à partir de (n+1) lois normales centrées,
 %avec p points entre deux ruptures, où une rupture correspond à une
 %augmentation de c de l'écart-type. On obtient alors une figure
