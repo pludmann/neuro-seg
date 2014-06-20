@@ -1,4 +1,4 @@
-function [sumdiff, N, P, diff, np] = online_efficiency_test(n,p,c,thresh,plt)
+function [m, N, P, diff, sumdiff, np] = online_efficiency_test(n, p, c, thresh, plt)
 
 %[sumdiff, N, p, diff] = online_efficiency_test(n,p,c,thresh,plt) génère un signal
 %à n ruptures à partir de (n+1) lois normales centrées, avec p points entre 
@@ -14,9 +14,6 @@ function [sumdiff, N, P, diff, np] = online_efficiency_test(n,p,c,thresh,plt)
 %est plus petit que p/100.
 
     Y = zeros((n+1)*p,1);
-    nt = zeros(1, n);
-    np = zeros(1, n);
-    diff = zeros(1, n);
     N = 0;
     P = 0;
     isokay = false;
@@ -27,7 +24,10 @@ function [sumdiff, N, P, diff, np] = online_efficiency_test(n,p,c,thresh,plt)
     end
     
     times = all_online(Y, {'std'}, thresh);
-    np(1, 1:(size(times,2))) = sort(times, 'ascend');
+    m = size(times,2);
+    np(1, 1:m) = sort(times, 'ascend');
+    nt = floor(np/p)*p;
+    diff = zeros(1, m);
     
     if (plt == true)
         figure;
@@ -35,8 +35,7 @@ function [sumdiff, N, P, diff, np] = online_efficiency_test(n,p,c,thresh,plt)
         hold on
     end
     
-    for k = 1:n
-        nt(k) = p*k;
+    for k = 1:m
         if (plt == true)
             line([nt(k), nt(k)], [min(Y), max(Y)], 'Color', [0; 0.8; 0]);
             line([np(k), np(k)], [min(Y), max(Y)], 'Color', 'r');     
