@@ -5,7 +5,7 @@ space = zeros(1, iternb) ;
 
 for i = 1 : iternb
     
-    space(i) = floor(2*spacemean*rand) + minspace ;
+    space(i) = floor(2*(spacemean-minspace)*rand) + minspace ;
     
     y = [y; rand*randn(space(i), 1) + rand] ;
     
