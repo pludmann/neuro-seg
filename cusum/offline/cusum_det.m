@@ -10,10 +10,10 @@ function L = cusum_det(Y)
 %signal
 %- L(:,4) est la somme de ces trois termes
 
-    N = size(Y, 1);
+    N = size(Y, 2);
     L = zeros((N-3), 4);
     for k = 3:(N-1)
-           L((k-2), 1:3) = [N*log(std(Y)), -(k-1)*log(std(Y(1:(k-1),1))), -(N-k+1)*log(std(Y(k:N,1)))];
+           L((k-2), 1:3) = [N*log(std(Y)), -(k-1)*log(std(Y(1,1:(k-1)))), -(N-k+1)*log(std(Y(1,k:N)))];
     end
     L(:,4) = L(:,1)+L(:,2)+L(:,3);
 end

@@ -3,6 +3,7 @@
 \usepackage[utf8]{inputenc}
 %\usepackage[T1]{fontenc}
 %\usepackage[latin1]{inputenc}
+<<<<<<< HEAD
 \usepackage{textcomp}
 
 \usetheme{Warsaw}
@@ -41,19 +42,51 @@
 
 \begin{frame}
 	\frametitle{Présentation}
+=======
+
+\usetheme{Warsaw}
+
+\title[Signal segmentation]{Functional data analysis applied to neurology}
+\author{Clément Bonvoisin, Pierre Ludmann}
+\institute{CMLA (ENS Cachan), Cognac-G (Paris V)}
+\date{09/04/2014}
+
+\graphicspath{{/home/marvin/neuro-seg/Presoutenance/}}
+\setbeamersize{text margin left=1.4cm}
+\begin{document}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}[frame number]
+%\addtobeamertemplate{footline}{\hfill\insertframenumber/\inserttotalframenumber}
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+\begin{frame}
+\frametitle{Plan}
+  \tableofcontents[hideallsubsections]
+\end{frame}
+
+\AtBeginSection[]
+{
+  \begin{frame}
+  \tableofcontents[currentsection, hideothersubsections]
+  \end{frame} 
+}
+
+\section{Introduction}
+\subsection{Motivation du problème}
+\begin{frame}
+	\frametitle{Présentation}
+>>>>>>> fc6557c60a9e7f48acbd48c88e625d7606486528
 	\begin{itemize}
-		\item[Projet] pluridisciplinaire
-			\\ Médecins
-			\\ Mathématiciens
-		\item[Enjeux] variés
-			\\ Fournir une base de donnée aux deux acteurs
-			\\ Tester des modèles sur des signaux réels
-			\\ Suivi des patients
-			\\ Étudier les troubles de la marche
-		\item[Protocole] expérimental
-			\\ Placements des capteurs
-			\\ Mouvements
+		\item[Travail] avec des neurologues : Cognac-G
+		\item[Enjeux :] mieux comprendre et traiter certaines maladies
+		\item[Expérience] simple :
+			\\ Placements des capteurs (pieds, ceinture)
+			\\ Mouvements : marche aller/retour
 			\\ Référentiel de travail
+<<<<<<< HEAD
 	\end{itemize}	
 \end{frame}
 
@@ -115,6 +148,62 @@ où $t_{-1}=1$ et $t_R=N$
 %		M. Basseville, I. V. Nikiforov (1993)
 %		\item[Proposé] dans \emph{Continuous inspection scheme}, E.S. Page (1954)
 		\item[Comparer] l'hypothèse d'un changement à l'hypothèse stationnaire
+=======
+	\end{itemize}	
+\end{frame}
+
+\subsection{Segmentation d'un signal}
+\begin{frame}
+	\frametitle{Exemple}
+\end{frame}
+\subsection{Attentes et essais}
+
+\begin{frame}
+	\frametitle{}
+	\begin{itemize}
+		\item[L'affichage] montre clairement les différentes séquences de l'expérience
+		\item[$\Longrightarrow$] La segmentation automatique doit être rapide et précise, au moins autant qu'à l'œil
+		
+		\item[Etiquettes]: Idle, Start, Stop, Walk, Turn, Trash
+		
+	\end{itemize}
+\end{frame}
+
+\section{Recherche de ruptures}
+
+\subsection{Définition}
+
+\begin{frame}
+
+\frametitle{Formaliser la rupture}
+
+\begin{itemize}
+
+	\item[Signaux]: réalisations d'un nombre fini de variables aléatoires $(X_i)_{i \in \{1..n\}}$
+	
+	\item[Rupture]: instant $t_0$ où la loi des variables aléatoires $X_i$ change.
+
+\end{itemize}
+
+\[
+	\forall k \in [1, t_0-1], X_k \sim p_0
+\]
+\[
+	\forall k \in [t_0, n], X_k \sim p_1
+\]
+
+\end{frame}
+
+\subsection{Algorithme CUSUM}
+
+\begin{frame}
+	\frametitle{Généralités sur l'algorithme CUSUM}
+	\begin{itemize}
+		\item[Biblio] \emph{Detection of Abrupt Changes : Theory and Application},\\
+		M. Basseville, I. V. Nikiforov (1993)
+		\item[Proposé] dans \emph{Continuous inspection scheme}, E.S. Page (1954)
+%		\item[Comparer] l'hypothèse d'un changement à l'hypothèse stationnaire
+>>>>>>> fc6557c60a9e7f48acbd48c88e625d7606486528
 	\end{itemize}
 
 \vspace{-.4cm}
@@ -129,8 +218,9 @@ où $t_{-1}=1$ et $t_R=N$
 
 \vspace{-.4cm}
 	\begin{equation}
-		\max_{1 \leq k \leq N} L_k \geq h \Rightarrow t_0 = \arg \max_{1 \leq k \leq N} L_k
+		t_0 = \arg \max_{1 \leq k \leq N} L_k
 	\end{equation}
+<<<<<<< HEAD
 	
 \end{frame}
 
@@ -191,6 +281,68 @@ où $t_{-1}=1$ et $t_R=N$
 
 	\item[Python]
 	
+=======
+%	\begin{itemize}
+%		\item[Complexité] élevée avec les bornes supérieures : besoin de simplification
+%	\end{itemize}
+\end{frame}
+
+\subsection{Hypothèses et conséquences}
+
+\begin{frame}
+	\frametitle{Hypothèses}
+	\begin{itemize}
+		\item[Hypothèse] forte : indépendance temporelle
+		\item[Hypothèse] utile : bornes supérieures atteintes aux estimateurs
+		\item[Lois] normales (deux paramètres) :
+	\end{itemize}
+	\begin{equation}
+		p_{\mu, \sigma}(y) = \frac1{\sigma\sqrt{2 \pi}} \exp \left[ -\frac12 \left( \frac{y - \mu}{\sigma} \right)^2 \right]
+	\end{equation}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Choix des paramètres - Formules correspondantes}
+	Trois cas possibles :
+	\vspace*{.3cm}
+	\begin{itemize}
+		\item[$\theta=\mu$]: (4) avec $\mu=\frac1n\sum_{i=1}^ny_i$ et $\sigma$ fixé
+		\vspace*{.2cm}
+		\item[$\theta=\sigma$]:  (5) avec $\mu$ fixé et $\sigma=\frac1n\sum_{i=1}^n(y_i-\mu)^2$
+		\vspace*{.2cm}
+		\item[$\theta=(\mu,\theta)$]: (5) avec \mbox{$\mu=\frac1n\sum_{i=1}^ny_i$ et $\sigma=\frac1n\left[\sum_{i=1}^ny_i^2-(\sum_{i=1}^ny_i)^2\right]$}
+	\end{itemize}
+	\vspace*{0.8cm}
+	\begin{equation}
+	\hspace{-1cm}	L_k=\frac 1{2\sigma^2}\left[(k-1)\mu_0^2+(N-k+1)\mu_1^2-N\tilde\mu^2\right]
+	\end{equation}
+	ou
+	\begin{equation}
+	\hspace{-1cm}	L_k=N\ln(\tilde\sigma)-(k-1)\ln(\sigma_0)-(N-k+1)\ln(\sigma_1)
+	\end{equation}
+\end{frame}
+
+\section{Implémentations}
+
+\subsection{Hors ligne}
+
+\begin{frame}
+
+\end{frame}
+
+\subsection{En ligne}
+
+\section{Conclusion}
+
+\begin{frame}
+
+\begin{itemize}
+
+	\item[Python]
+	
+	\item[Capteurs]
+	
+>>>>>>> fc6557c60a9e7f48acbd48c88e625d7606486528
 	\item[BDD] bien reglée
 	
 	\item[Capteurs] encore trop chers et peu efficaces
