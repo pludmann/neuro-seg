@@ -32,7 +32,7 @@
 
 \section{Introduction}
 
-	\subsection{Segmentation d'un signal}
+	\subsection{Introduction au problème}
 
 \begin{frame}
 	\frametitle{Présentation du problème}
@@ -52,11 +52,12 @@
 	\end{itemize}	
 \end{frame}
 
+	\subsection{Segmentation d'un signal}
+
 \begin{frame}
 	\frametitle{Exemple}
 \end{frame}
 
-	\subsection{Attentes et essais}
 
 %\begin{frame}
 %	\frametitle{}
@@ -69,7 +70,7 @@
 %	\end{itemize}
 %\end{frame}
 
-\section{Recherche de ruptures}
+\section{Formalisation et outils}
 
 \subsection{Définition}
 
@@ -173,26 +174,81 @@ où $t_{-1}=1$ et $t_R=N$
 
 \begin{frame}
 
-\frametitle{}
+\frametitle{Implémentation par dichotomie}
 
-Principe :
-\begin{itemize}
-	\item[]
-\end{itemize}
+Principe : détecter une rupture, séparer le signal en deux, détecter deux nouvelles ruptures, les comparer, etc., jusqu'à n ruptures.
+\begin{figure}
+	\includegraphics[scale=0.5]{diagramme_cusum_dikt.png}
+	\caption{Principe du CUSUM dichotomique}
+\end{figure}
 
-Avantages :
-\begin{itemize}
-	\item
-\end{itemize}
+%Avantages :
+%\begin{itemize}
+%	\item
+%\end{itemize}
 
-Inconvénients :
-\begin{itemize}
-	\item
-\end{itemize}
+%Inconvénients :
+%\begin{itemize}
+%	\item
+%\end{itemize}
 
 \end{frame}
 
+\begin{frame}
+	\frametitle{Résultats : une segmentation}
+	\begin{figure}
+		\includegraphics[scale=0.3]{seg_test_dikt.png}
+		\caption{Exemple d'une segmentation par CUSUM dichotomique}
+	\end{figure}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Résultats : taux d'erreur}
+	\begin{figure}
+		\includegraphics{}
+		\caption{Taux d'erreurs entre vraie rupture et rupture détectée (CUSUM dichotomique)}
+	\end{figure}
+\end{frame}
+
 \subsection{Fenêtres}
+
+\begin{frame}
+
+\frametitle{Implémentation par fenêtres}
+Principe : faire glisser une fenêtre de taille fixe le long du signal. Dans cette fenêtre, calculer le log-likelihood ratio associé au centre de la fenêtre. Rechercher ensuite les maximas.
+
+\begin{figure}
+	\includegraphics[scale=0.6]{diagramme_cusum_fen.png}
+	\caption{Principe du CUSUM par fenêtres}
+\end{figure}
+
+%Avantages :
+%\begin{itemize}
+%	\item
+%\end{itemize}
+
+%Inconvénients :
+%\begin{itemize}
+%	\item
+%\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+	\frametitle{Résultats : une segmentation}
+	\begin{figure}
+		\includegraphics{}
+		\caption{Exemple d'une segmentation par CUSUM par fenêtres}
+	\end{figure}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Résultats : taux d'erreur}
+	\begin{figure}
+		\includegraphics{}
+		\caption{Taux d'erreurs entre vraie rupture et rupture détectée}
+	\end{figure}
+\end{frame}
 
 \section{Conclusion}
 
