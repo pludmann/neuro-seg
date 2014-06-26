@@ -348,13 +348,18 @@ Principe : faire glisser une fenêtre de taille fixe le long du signal. Dans cet
 
 \begin{itemize}
 
-	\item[Python]
+	\item[Approche] par dichotomie
+			\\ Moins gourmande en calculs
+			\\ Moins adaptée à la théorie de l'algorithme CUSUM
+			\\ De nombreuses double-ruptures, des ruptures mal détectées
 	
-	\item[BDD] bien reglée
+	\item[Approche] par fenêtres
+			\\ Complexité plus élevée
+			\\ Plus adaptée à la théorie
+			\\ Plus performante pour des écarts entre deux ruptures légers
 	
-	\item[Capteurs] encore trop chers et peu efficaces
+	\item[Capteurs] actuels à 100Hz : bonne détection
 	
-	\vspace*{1cm}
 	\item[Travail] sur les segments : différencier et détecter les différents types de maladies
 	\item[$\Longrightarrow$] machine learning sur les segments obtenus
 	\vspace*{1cm}
