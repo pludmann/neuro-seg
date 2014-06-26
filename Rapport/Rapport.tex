@@ -48,8 +48,8 @@ Son utilisation doit faire place à un apprentissage sur les segments de régime
 		\item On replace alors les signaux obtenus dans un repère adapté au corps humain, formé de trois axes : l'axe antéro-postérieur, l'axe transversal (aussi appelé médio-latéral), et l'axe longitudinal (aussi appelé axe vertical).
 	\end{itemize}
 	
-	\begin{figure}[h]
-		\includegraphics[scale=0.4]{axis.png}
+	\begin{figure}[!h]
+		\includegraphics[scale=0.3]{axis.png}
 		\caption{Le repère (antéro-postérieur; médio-latéral; vertical)}
 		\label{axis}
 	\end{figure}
@@ -58,7 +58,7 @@ Son utilisation doit faire place à un apprentissage sur les segments de régime
 	
 	On obtient alors des signaux physiologiques ayant 6 composantes distinctes pour chaque capteur, à une fréquence d'acquisition dépendante de la centrale inertielle utilisée ; actuellement, le projet Cognac-G dispose d'instruments permettant un échantillonnage à 100Hz.
 	
-	\begin{figure}[h]
+	\begin{figure}[!h]
 		\includegraphics[scale=0.5]{ex_signal_back.png}
 		\caption{Un exemple de signal de marche (enregistré à la ceinture)}
 		\label{ex_signal_back}
@@ -81,7 +81,37 @@ Son utilisation doit faire place à un apprentissage sur les segments de régime
 	\section{Formalisme mathématique}
 	Afin de pouvoir traiter mathématiquement le problème, il nous faut tout d'abord poser des définitions claires sur l'objet du problème : il s'agit donc de définir ce qu'est une rupture, au sens mathématique.
 	\\ \\
+	La littérature propose une approche statistique du problème : on considère les signaux comme la réalisation d'une suite (finie) de variables aléatoires :
+%Proposer ici des références bibliographiques...
+	\begin{equation}
+		(x_i)_{i \in \{1..N\}} = (X_i(\omega))_{i \in \{1..N\}}
+		\label{11}
+	\end{equation}
 	
+	Ce formalisme, qui peut paraître quelque peu abstrait en première approche, permet d'exprimer de manière simple la notion de rupture dans un signal.
+	\\ \\
+	Sur les signaux précédents, on constate, par exemple, une différence nette d'écart-type entre la phase à l'arrêt et la phase de marche ; de même, sur la vitesse angulaire verticale, on constate un changement de moyenne entre les phases de marche et le demi-tour. Il paraît donc naturel de considérer la distribution statistique des différents points d'un signal multivarié pour formaliser le concept de rupture.
+	\\ \\
+	On comprend alors la définition donnée par la littérature d'un point de rupture à un instant $t_0$ :
+	\begin{equation}
+	\begin{array}{ll}
+			\forall t \in [1, t_0-1], X_i \sim p_0 \\
+			 \forall t \in [t_0, N], X_i \sim p_1 \\
+	\end{array}
+	\end{equation}
+	
+	On généralise de manière évidente au cas de $n$ ruptures aux points $(t_i)_{i \in \{0, n-1\}}$ :
+	
+	\begin{equation}
+	\begin{array}{lll}
+		\forall i \in \{0, n-1\}, \\
+		\forall t \in \{t_{i-1}, t_i-1\}, X_i \sim p_{i-1} \\
+		\forall t \in \{t_i, t_{i+1}-1\}, X_i \sim p_i
+	\end{array}
+	\end{equation}
+	Où l'on a posé : $t_{-1} = 1$ et $t_n = N$.
+	\\ \\
+	Ce problème étant formalisé, il s'agit maintenant de trouver des méthodes pour détecter ces points de rupture.
 	
 	\chapter{Algorithme CUSUM : résolution du cas d'une seule rupture}
 	
