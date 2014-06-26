@@ -5,6 +5,8 @@
 \usepackage[a4paper]{geometry}
 \usepackage[francais]{babel}
 \usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{amsmath}
 
 
 \begin{document}
@@ -114,6 +116,41 @@ Son utilisation doit faire place à un apprentissage sur les segments de régime
 	Ce problème étant formalisé, il s'agit maintenant de trouver des méthodes pour détecter ces points de rupture.
 	
 	\chapter{Algorithme CUSUM : résolution du cas d'une seule rupture}
+	
+	
+	\section{Principe de l'algorithme CUSUM}
+	L'algorithme CUSUM fut proposé en 1954 par E.S. Page dans l'article \textit{Continuous Inspection Scheme}, dans une version en ligne. Les signaux étant ici déjà réalisés, il nous faut ici adapter l'algorithme au cas hors ligne (cf. M. Basseville, I.V. Nikiforov, \textit{Detection of Abrupt Changes : Theory and Application}).
+	% \textit à remplacer par des \ref
+	\\ \\
+	Dans le formalisme précédent, on conçoit que les méthodes de détection de rupture se fondent sur des outils statistiques. L'idée de base de l'algorithme CUSUM hors ligne est la suivante : comparer l'hypothèse qu'il existe une rupture dans le signal considéré à l'hypothèse qu'il n'y en a pas. L'outil utilisé pour cette comparaison est la notion de vraisemblance. Pour simplifier, on fera maintenant l'hypothèse d'indépendance des variables aléatoires $(X_i)_{i \in [1,N]}$.
+	\\ \\
+	La fonction de vraisemblance quantifie la vraisemblance d'une hypothèse étant donnée une observation. Ici, l'observation faite est le signal, qui est la réalisation d'un nombre fini de variables aléatoires. On cherche à comparer l'hypothèse $H_t$ qu'à l'instant $t \in [1, N]$, il y a une rupture, à l'hypothèse $H$ qu'il n'y en a pas dans le signal. Les vraisemblances de ces hypothèses sont :
+	\begin{equation}
+	\begin{array}{ll}
+		\forall t \in [1, N],l(H_t) = \prod_{i = 1}^{t-1} p_0(x_i) \prod_{i = t}^{N} p_1(x_i) \\
+		l(H) = \prod_{i = 1}^N \tilde{p_0}(x_i) \\
+	\end{array}	
+	\end{equation}
+	
+	Introduisons alors le rapport de vraisemblance des hypothèses :
+	\begin{equation}
+		\forall t \in [1, N], \Lambda_t^{p_0, p_1} = \frac{l(H_t)}{l(H)} = \frac{\prod_{i = 1}^{t-1} p_0(x_i) \prod_{i = t}^{N} p_1(x_i)}{\prod_{i = 1]}^{N} \tilde{p_0}(x_i)}
+	\end{equation}
+	
+	Pour simplifier, on fera ici l'hypothèse que nos lois sont issues d'une famille de lois indexée par un paramètre $\theta \in \mathbb{R}^d$. On a ainsi :
+	
+	\begin{equation*}
+		p_0 = p_{\theta_0} ; p_1 = p_{\theta_1}
+	\end{equation*}
+	
+	On ne connaît pas, a priori, les paramètres $\theta_0$ et $\theta_1$. Pour les estimer, on va donc utiliser l'estimation du maximum de vraisemblance. Il en découle alors la formule suivante, à la base de l'algorithme CUSUM :
+	
+	\begin{equation}
+		\forall t \in [1, N], L_k=\ln\left[\frac{\left(\sup_{\theta_0}\prod_{i=1}^{k-1}p_{\theta_0}(y_i)\right)\left(\sup_{\theta_1}\prod_{i=k}^Np_{\theta_1}(y_i)\right)}{\sup_{\tilde\theta}p_{\tilde\theta}(y_i)}\right]
+	\end{equation}
+	
+	\section{Simplification dans le cas de distributions gaussiennes}
+	
 	
 	\chapter{Cas de plusieurs ruptures : implémentation dichotomique}
 	
