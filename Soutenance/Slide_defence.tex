@@ -38,17 +38,17 @@
 	\frametitle{Présentation du problème}
 	\begin{itemize}
 		\item[Projet] pluridisciplinaire
-			\\ Médecins
-			\\ Mathématiciens
+		\item Médecins
+		\item Mathématiciens
 		\item[Enjeux] variés
-			\\ Fournir une base de donnée aux deux acteurs
-			\\ Tester des modèles sur des signaux réels
-			\\ Suivi des patients
-			\\ Étudier les troubles de la marche
+		\item Fournir une base de donnée aux deux acteurs
+		\item Tester des modèles sur des signaux réels
+		\item Suivi des patients
+		\item Étudier les troubles de la marche
 		\item[Protocole] expérimental
-			\\ Placements des capteurs
-			\\ Mouvements
-			\\ Référentiel de travail
+		\item Placements des capteurs
+		\item Mouvements
+		\item Référentiel de travail
 	\end{itemize}	
 \end{frame}
 
@@ -282,11 +282,11 @@ Principe : %détecter une rupture, séparer le signal en deux, détecter deux no
 %	\end{figure}
 %\end{frame}
 
-\subsection{Fenêtres}
+\subsection{Fenêtre}
 
 \begin{frame}
 
-\frametitle{Implémentation par fenêtres}
+\frametitle{Implémentation par fenêtre}
 Principe : %faire glisser une fenêtre de taille fixe le long du signal. Dans cette fenêtre, calculer le log-likelihood ratio associé au centre de la fenêtre. Rechercher ensuite les maximas.
 
 \begin{itemize}
@@ -297,7 +297,7 @@ Principe : %faire glisser une fenêtre de taille fixe le long du signal. Dans ce
 
 \begin{figure}
 	\includegraphics[scale=0.5]{diagramme_cusum_fen.png}
-	\caption{Principe du CUSUM par fenêtres}
+	\caption{Principe du CUSUM par fenêtre}
 \end{figure}
 
 %Avantages :
@@ -316,7 +316,9 @@ Principe : %faire glisser une fenêtre de taille fixe le long du signal. Dans ce
 	\frametitle{Segmentation par fenêtre de signaux physiologiques}
 	\begin{figure}
 		\includegraphics[scale=0.3]{seg1_win.png}
-		\caption{Exemple d'une segmentation par CUSUM en fenêtres (1 rupture)}
+		\caption{Exemple d'une segmentation par CUSUM en fenêtre 
+		~~~~~~~~
+		(1 rupture)}
 	\end{figure}
 \end{frame}
 
@@ -324,7 +326,9 @@ Principe : %faire glisser une fenêtre de taille fixe le long du signal. Dans ce
 	\frametitle{Segmentation par fenêtre de signaux physiologiques}
 	\begin{figure}
 		\includegraphics[scale=0.3]{seg2_win.png}
-		\caption{Exemple d'une segmentation par CUSUM en fenêtres (2 ruptures)}
+		\caption{Exemple d'une segmentation par CUSUM en fenêtre
+		~~~~~~~~
+		(2 ruptures)}
 	\end{figure}
 \end{frame}
 
@@ -332,7 +336,9 @@ Principe : %faire glisser une fenêtre de taille fixe le long du signal. Dans ce
 	\frametitle{Segmentation par fenêtre de signaux physiologiques}
 	\begin{figure}
 		\includegraphics[scale=0.3]{seg3_win.png}
-		\caption{Exemple d'une segmentation par CUSUM en fenêtres (3 ruptures)}
+		\caption{Exemple d'une segmentation par CUSUM en fenêtre
+		~~~~~~~~
+		(3 ruptures)}
 	\end{figure}
 \end{frame}
 
@@ -340,7 +346,9 @@ Principe : %faire glisser une fenêtre de taille fixe le long du signal. Dans ce
 	\frametitle{Segmentation par fenêtre de signaux physiologiques}
 	\begin{figure}
 		\includegraphics[scale=0.3]{seg4_win.png}
-		\caption{Exemple d'une segmentation par CUSUM en fenêtres (4 ruptures)}
+		\caption{Exemple d'une segmentation par CUSUM en fenêtre
+		~~~~~~~~~
+		(4 ruptures)}
 	\end{figure}
 \end{frame}
 
@@ -348,7 +356,9 @@ Principe : %faire glisser une fenêtre de taille fixe le long du signal. Dans ce
 	\frametitle{Segmentation par fenêtre de signaux physiologiques}
 	\begin{figure}
 		\includegraphics[scale=0.3]{seg5_win.png}
-		\caption{Exemple d'une segmentation par CUSUM en fenêtres (5 ruptures)}
+		\caption{Exemple d'une segmentation par CUSUM en fenêtre
+		~~~~~~~~
+		(5 ruptures)}
 	\end{figure}
 \end{frame}
 
@@ -356,7 +366,9 @@ Principe : %faire glisser une fenêtre de taille fixe le long du signal. Dans ce
 	\frametitle{Segmentation par fenêtre de signaux physiologiques}
 	\begin{figure}
 		\includegraphics[scale=0.3]{seg6_win.png}
-		\caption{Exemple d'une segmentation par CUSUM en fenêtres (6 ruptures)}
+		\caption{Exemple d'une segmentation par CUSUM en fenêtre
+		~~~~~~~~
+		(6 ruptures)}
 	\end{figure}
 \end{frame}
 
@@ -374,20 +386,20 @@ Principe : %faire glisser une fenêtre de taille fixe le long du signal. Dans ce
 
 \begin{itemize}
 
-	\item[Approche] par dichotomie
-			\\ Moins gourmande en calculs
-			\\ Moins adaptée à la théorie de l'algorithme CUSUM
-			\\ De nombreuses double-ruptures, des ruptures mal détectées
-	
-	\item[Approche] par fenêtres
-			\\ Complexité plus élevée
-			\\ Plus adaptée à la théorie
-			\\ Plus performante pour des petits écarts entre deux ruptures
-	
+	\item[Approche] par dichotomie :
+	\item Moins gourmande en calculs
+	\item Moins adaptée à la théorie de l'algorithme CUSUM
+	\item De nombreuses double-ruptures, des ruptures mal détectées
+	\vspace{.5cm}
+	\item[Approche] par fenêtre :
+	\item Complexité plus élevée
+	\item Plus adaptée à la théorie
+	\item Plus performante pour des petits écarts entre deux ruptures
+	\vspace{1cm}
 	\item[Capteurs] actuels à 100Hz : bonne détection
-	
+	\vspace{.5cm}
 	\item[Travail] sur les segments : différencier et détecter les différents types de maladies
-	\item[$\Longrightarrow$] machine learning sur les segments obtenus
+	\item[$\Longrightarrow$] apprentissage sur les segments obtenus
 	\vspace*{1cm}
 
 \end{itemize}
