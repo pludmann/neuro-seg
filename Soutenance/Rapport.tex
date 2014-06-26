@@ -1,16 +1,40 @@
-\documentclass[french]{book}
+\documentclass[french,12pt]{report}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
 \usepackage[a4paper]{geometry}
-\usepackage{babel}
+\usepackage[francais]{babel}
 \usepackage{graphicx}
+
 
 \begin{document}
 	\title{Functional data analysis applied to neurology}
 	\author{Clément Bonvoisin, Pierre Ludmann}
 	\date{30 juin 2014}
 	\maketitle
+
+	\begin{abstract}
+  
+Il s'agit de segmenter des signaux de marche,
+dans le cadre d'une collaboration du CMLA (ENS Cachan) et Cognac-G (Paris V).
+%Quels sont les travaux déjà accomplis dans ce domaine dans le monde?
+
+On propose donc ici des algorithmes pour détecter des ruptures.
+Cela permet en aval aux médecins de mieux étudier les différentes régimes de marche.
+Un algorithme efficace et rapide semble encore manquer.
+
+Si la détection d'un unique changement trouve des implémentations reconnues,
+on a cherché à généraliser à de multiples ruptures.
+Aussi on a changé le paramètre de décision : on exige un nombre précis de résultats plutôt qu'un seuil de détection.
+
+Malgré de fortes hypothèses de travail,
+on obtient des résultats statisfaisants sur des signaux réels et synthétiques
+bien que des améliorations restes possibles.
+
+Son utilisation doit faire place à un apprentissage sur les segments de régime obtenus.
+	
+	\end{abstract}
+
 	\tableofcontents
 
 	\chapter{Introduction au problème}
