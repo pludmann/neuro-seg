@@ -19,15 +19,17 @@
 	Le protocole expérimental se décline comme suit :
 	\begin{itemize}
 		\item On place sur le patient un ensemble de capteurs : un à la tête, un à la ceinture, et un sur chaque pied. Ces capteurs sont des centrales inertielles, qui permettent une mesure de l'accélération et de la vitesse angulaire du patient.
-		\item On lance l'acquisition. Pendant quelques secondes, le patient est à l'arrêt. Puis, il commence à marcher sur une dizaine de mètres, effectue un demi-tour, et fait une marche retour. Il s'arrête, et on peut alors arrêter l'acquisition
-		\item On replace alors les signaux obtenus dans un repère adapté au corps humain, formé de trois axes : l'axe antéro-postérieur, l'axe médio-latéral, et l'axe vertical
+		\item On lance l'acquisition. Pendant quelques secondes, le patient est à l'arrêt. Puis, il commence à marcher sur une dizaine de mètres, effectue un demi-tour, et fait une marche retour. Il s'arrête, et on peut alors arrêter l'acquisition.
+		\item On replace alors les signaux obtenus dans un repère adapté au corps humain, formé de trois axes : l'axe antéro-postérieur, l'axe transversal (aussi appelé médio-latéral), et l'axe longitudinal (aussi appelé axe vertical) ; cf. \ref{axis}.
 	\end{itemize}
 	
 	\begin{figure}[h]
-		\includegraphics{}
-		\caption{}
-		\label{}
+			\includegraphics[scale=0.6]{axis.png}
+			\caption{Repère adapté au corps humain}
+			\label{axis}
 	\end{figure}
+
+
 	
 	\chapter{Algorithme CUSUM : résolution du cas d'une seule rupture}
 	
