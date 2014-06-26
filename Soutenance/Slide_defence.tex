@@ -168,6 +168,14 @@ où $t_{-1}=1$ et $t_R=N$
 	\end{equation}
 \end{frame}
 
+\begin{frame}
+	\frametitle{Détection d'une rupture}
+	\begin{figure}
+		\includegraphics[scale=0.3]{cusum_1rupt.png}
+		\caption{Détection d'une rupture par l'algorithme CUSUM}
+	\end{figure}
+\end{frame}
+
 \section{Implémentations}
 
 \subsection{Dichotomie}
@@ -197,18 +205,58 @@ Principe : détecter une rupture, séparer le signal en deux, détecter deux nou
 \begin{frame}
 	\frametitle{Résultats : une segmentation}
 	\begin{figure}
-		\includegraphics[scale=0.3]{seg_test_dikt.png}
-		\caption{Exemple d'une segmentation par CUSUM dichotomique}
+		\includegraphics[scale=0.5]{dikt-seg1.png}
+		\caption{Exemple d'une segmentation par CUSUM dichotomique (1 rupture)}
 	\end{figure}
 \end{frame}
 
 \begin{frame}
-	\frametitle{Résultats : taux d'erreur}
+	\frametitle{Résultats : une segmentation}
 	\begin{figure}
-		\includegraphics{}
-		\caption{Taux d'erreurs entre vraie rupture et rupture détectée (CUSUM dichotomique)}
+		\includegraphics[scale=0.5]{dikt-seg2.png}
+		\caption{Exemple d'une segmentation par CUSUM dichotomique (2 ruptures)}
 	\end{figure}
 \end{frame}
+
+\begin{frame}
+	\frametitle{Résultats : une segmentation}
+	\begin{figure}
+		\includegraphics[scale=0.5]{dikt-seg3.png}
+		\caption{Exemple d'une segmentation par CUSUM dichotomique (3 ruptures)}
+	\end{figure}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Résultats : une segmentation}
+	\begin{figure}
+		\includegraphics[scale=0.3]{dikt-seg4.png}
+		\caption{Exemple d'une segmentation par CUSUM dichotomique (4 ruptures)}
+	\end{figure}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Résultats : une segmentation}
+	\begin{figure}
+		\includegraphics[scale=0.3]{dikt-seg5.png}
+		\caption{Exemple d'une segmentation par CUSUM dichotomique (5 ruptures)}
+	\end{figure}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Résultats : une segmentation}
+	\begin{figure}
+		\includegraphics[scale=0.3]{dikt-seg6.png}
+		\caption{Exemple d'une segmentation par CUSUM dichotomique (6 ruptures)}
+	\end{figure}
+\end{frame}
+
+%\begin{frame}
+%	\frametitle{Résultats : taux d'erreur}
+%	\begin{figure}
+%		\includegraphics{}
+%		\caption{Taux d'erreurs entre vraie rupture et rupture détectée (CUSUM dichotomique)}
+%	\end{figure}
+%\end{frame}
 
 \subsection{Fenêtres}
 
@@ -237,18 +285,58 @@ Principe : faire glisser une fenêtre de taille fixe le long du signal. Dans cet
 \begin{frame}
 	\frametitle{Résultats : une segmentation}
 	\begin{figure}
-		\includegraphics{}
-		\caption{Exemple d'une segmentation par CUSUM par fenêtres}
+		\includegraphics[scale=0.3]{seg1_win.png}
+		\caption{Exemple d'une segmentation par CUSUM en fenêtres (1 rupture)}
 	\end{figure}
 \end{frame}
 
 \begin{frame}
-	\frametitle{Résultats : taux d'erreur}
+	\frametitle{Résultats : une segmentation}
 	\begin{figure}
-		\includegraphics{}
-		\caption{Taux d'erreurs entre vraie rupture et rupture détectée}
+		\includegraphics[scale=0.3]{seg2_win.png}
+		\caption{Exemple d'une segmentation par CUSUM en fenêtres (2 ruptures)}
 	\end{figure}
 \end{frame}
+
+\begin{frame}
+	\frametitle{Résultats : une segmentation}
+	\begin{figure}
+		\includegraphics[scale=0.3]{seg3_win.png}
+		\caption{Exemple d'une segmentation par CUSUM en fenêtres (3 ruptures)}
+	\end{figure}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Résultats : une segmentation}
+	\begin{figure}
+		\includegraphics[scale=0.3]{seg4_win.png}
+		\caption{Exemple d'une segmentation par CUSUM en fenêtres (4 ruptures)}
+	\end{figure}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Résultats : une segmentation}
+	\begin{figure}
+		\includegraphics[scale=0.3]{seg5_win.png}
+		\caption{Exemple d'une segmentation par CUSUM en fenêtres (5 ruptures)}
+	\end{figure}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Résultats : une segmentation}
+	\begin{figure}
+		\includegraphics[scale=0.3]{seg6_win.png}
+		\caption{Exemple d'une segmentation par CUSUM en fenêtres (6 ruptures)}
+	\end{figure}
+\end{frame}
+
+%\begin{frame}
+%	\frametitle{Résultats : taux d'erreur}
+%	\begin{figure}
+%		\includegraphics{}
+%		\caption{Taux d'erreurs entre vraie rupture et rupture détectée}
+%	\end{figure}
+%\end{frame} 
 
 \section{Conclusion}
 
