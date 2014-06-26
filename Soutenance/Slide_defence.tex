@@ -55,7 +55,7 @@
 	\subsection{Segmentation d'un signal}
 
 \begin{frame}
-	\frametitle{Exemple}
+	\frametitle{Exemple sur des signaux physiologiques}
 	\begin{figure}
 		\includegraphics[scale=0.3]{exemple_seg.png}
 		\caption{Segmentation à la main d'un signal de marche}
@@ -70,7 +70,7 @@
 %		\item[$\Longrightarrow$] La segmentation automatique doit être rapide et précise, au moins autant qu'à l'œil
 		
 %		\item[Etiquettes]: Idle, Start, Stop, Walk, Turn, Trash
-		
+	
 %	\end{itemize}
 %\end{frame}
 
@@ -188,9 +188,17 @@ où $t_{-1}=1$ et $t_R=N$
 
 \frametitle{Implémentation par dichotomie}
 
-Principe : détecter une rupture, séparer le signal en deux, détecter deux nouvelles ruptures, les comparer, etc., jusqu'à n ruptures.
+Principe : %détecter une rupture, séparer le signal en deux, détecter deux nouvelles ruptures, les comparer, etc., jusqu'à n ruptures.
+
+\begin{itemize}
+	\item[Maintenir] un ensemble de ruptures éligibles
+	\item[Extraire] la meilleure rupture de cet ensemble
+	\item[Calculer] les ruptures - éligibles - de chaque coté de la précédente
+	\item[Boucler] jusqu'à avoir extrait suffisamment de ruptures
+\end{itemize}
+
 \begin{figure}
-	\includegraphics[scale=0.5]{diagramme_cusum_dikt.png}
+	\includegraphics[scale=0.45]{diagramme_cusum_dikt.png}
 	\caption{Principe du CUSUM dichotomique}
 \end{figure}
 
@@ -207,50 +215,62 @@ Principe : détecter une rupture, séparer le signal en deux, détecter deux nou
 \end{frame}
 
 \begin{frame}
-	\frametitle{Résultats : une segmentation}
+	\frametitle{Segmentation par dichotomie de signaux physiologiques}
 	\begin{figure}
 		\includegraphics[scale=0.5]{dikt-seg1.png}
-		\caption{Exemple d'une segmentation par CUSUM dichotomique (1 rupture)}
+		\caption{Exemple d'une segmentation par CUSUM dichotomique
+		~~~~
+		(1 rupture)}
 	\end{figure}
 \end{frame}
 
 \begin{frame}
-	\frametitle{Résultats : une segmentation}
+	\frametitle{Segmentation par dichotomie de signaux physiologiques}
 	\begin{figure}
 		\includegraphics[scale=0.5]{dikt-seg2.png}
-		\caption{Exemple d'une segmentation par CUSUM dichotomique (2 ruptures)}
+		\caption{Exemple d'une segmentation par CUSUM dichotomique 
+		~~~~
+		(2 ruptures)}
 	\end{figure}
 \end{frame}
 
 \begin{frame}
-	\frametitle{Résultats : une segmentation}
+	\frametitle{Segmentation par dichotomie de signaux physiologiques}
 	\begin{figure}
 		\includegraphics[scale=0.5]{dikt-seg3.png}
-		\caption{Exemple d'une segmentation par CUSUM dichotomique (3 ruptures)}
+		\caption{Exemple d'une segmentation par CUSUM dichotomique
+		~~~~
+		(3 ruptures)}
 	\end{figure}
 \end{frame}
 
 \begin{frame}
-	\frametitle{Résultats : une segmentation}
+	\frametitle{Segmentation par dichotomie de signaux physiologiques}
 	\begin{figure}
 		\includegraphics[scale=0.3]{dikt-seg4.png}
-		\caption{Exemple d'une segmentation par CUSUM dichotomique (4 ruptures)}
+		\caption{Exemple d'une segmentation par CUSUM dichotomique
+		~~~~
+		(4 ruptures)}
 	\end{figure}
 \end{frame}
 
 \begin{frame}
-	\frametitle{Résultats : une segmentation}
+	\frametitle{Segmentation par dichotomie de signaux physiologiques}
 	\begin{figure}
 		\includegraphics[scale=0.3]{dikt-seg5.png}
-		\caption{Exemple d'une segmentation par CUSUM dichotomique (5 ruptures)}
+		\caption{Exemple d'une segmentation par CUSUM dichotomique
+		~~~~
+		(5 ruptures)}
 	\end{figure}
 \end{frame}
 
 \begin{frame}
-	\frametitle{Résultats : une segmentation}
+	\frametitle{Segmentation par dichotomie de signaux physiologiques}
 	\begin{figure}
 		\includegraphics[scale=0.3]{dikt-seg6.png}
-		\caption{Exemple d'une segmentation par CUSUM dichotomique (6 ruptures)}
+		\caption{Exemple d'une segmentation par CUSUM dichotomique
+		~~~~
+		(6 ruptures)}
 	\end{figure}
 \end{frame}
 
@@ -267,10 +287,16 @@ Principe : détecter une rupture, séparer le signal en deux, détecter deux nou
 \begin{frame}
 
 \frametitle{Implémentation par fenêtres}
-Principe : faire glisser une fenêtre de taille fixe le long du signal. Dans cette fenêtre, calculer le log-likelihood ratio associé au centre de la fenêtre. Rechercher ensuite les maximas.
+Principe : %faire glisser une fenêtre de taille fixe le long du signal. Dans cette fenêtre, calculer le log-likelihood ratio associé au centre de la fenêtre. Rechercher ensuite les maximas.
+
+\begin{itemize}
+	\item[Fixer] une fenêtre de travail au début du signal
+	\item[Calculer] le ratio d'une rupture au milieu de la fenêtre
+	\item[Glisser] la fenêtre sur le signal en refaisant le calcul
+\end{itemize}
 
 \begin{figure}
-	\includegraphics[scale=0.6]{diagramme_cusum_fen.png}
+	\includegraphics[scale=0.5]{diagramme_cusum_fen.png}
 	\caption{Principe du CUSUM par fenêtres}
 \end{figure}
 
@@ -287,7 +313,7 @@ Principe : faire glisser une fenêtre de taille fixe le long du signal. Dans cet
 \end{frame}
 
 \begin{frame}
-	\frametitle{Résultats : une segmentation}
+	\frametitle{Segmentation par fenêtre de signaux physiologiques}
 	\begin{figure}
 		\includegraphics[scale=0.3]{seg1_win.png}
 		\caption{Exemple d'une segmentation par CUSUM en fenêtres (1 rupture)}
@@ -295,7 +321,7 @@ Principe : faire glisser une fenêtre de taille fixe le long du signal. Dans cet
 \end{frame}
 
 \begin{frame}
-	\frametitle{Résultats : une segmentation}
+	\frametitle{Segmentation par fenêtre de signaux physiologiques}
 	\begin{figure}
 		\includegraphics[scale=0.3]{seg2_win.png}
 		\caption{Exemple d'une segmentation par CUSUM en fenêtres (2 ruptures)}
@@ -303,7 +329,7 @@ Principe : faire glisser une fenêtre de taille fixe le long du signal. Dans cet
 \end{frame}
 
 \begin{frame}
-	\frametitle{Résultats : une segmentation}
+	\frametitle{Segmentation par fenêtre de signaux physiologiques}
 	\begin{figure}
 		\includegraphics[scale=0.3]{seg3_win.png}
 		\caption{Exemple d'une segmentation par CUSUM en fenêtres (3 ruptures)}
@@ -311,7 +337,7 @@ Principe : faire glisser une fenêtre de taille fixe le long du signal. Dans cet
 \end{frame}
 
 \begin{frame}
-	\frametitle{Résultats : une segmentation}
+	\frametitle{Segmentation par fenêtre de signaux physiologiques}
 	\begin{figure}
 		\includegraphics[scale=0.3]{seg4_win.png}
 		\caption{Exemple d'une segmentation par CUSUM en fenêtres (4 ruptures)}
@@ -319,7 +345,7 @@ Principe : faire glisser une fenêtre de taille fixe le long du signal. Dans cet
 \end{frame}
 
 \begin{frame}
-	\frametitle{Résultats : une segmentation}
+	\frametitle{Segmentation par fenêtre de signaux physiologiques}
 	\begin{figure}
 		\includegraphics[scale=0.3]{seg5_win.png}
 		\caption{Exemple d'une segmentation par CUSUM en fenêtres (5 ruptures)}
@@ -327,7 +353,7 @@ Principe : faire glisser une fenêtre de taille fixe le long du signal. Dans cet
 \end{frame}
 
 \begin{frame}
-	\frametitle{Résultats : une segmentation}
+	\frametitle{Segmentation par fenêtre de signaux physiologiques}
 	\begin{figure}
 		\includegraphics[scale=0.3]{seg6_win.png}
 		\caption{Exemple d'une segmentation par CUSUM en fenêtres (6 ruptures)}
