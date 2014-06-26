@@ -22,7 +22,7 @@ dans le cadre d'une collaboration du CMLA (ENS Cachan) et Cognac-G (Paris V).
 %Quels sont les travaux déjà accomplis dans ce domaine dans le monde?
 
 On propose donc ici des algorithmes pour détecter des ruptures.
-Cela permet en aval aux médecins de mieux étudier les différentes régimes de marche.
+Cela permet en aval aux médecins de mieux étudier les différents régimes de marche.
 Un algorithme efficace et rapide semble encore manquer.
 
 Si la détection d'un unique changement trouve des implémentations reconnues,
@@ -146,7 +146,13 @@ Son utilisation doit faire place à un apprentissage sur les segments de régime
 	On ne connaît pas, a priori, les paramètres $\theta_0$ et $\theta_1$. Pour les estimer, on va donc utiliser l'estimation du maximum de vraisemblance. Il en découle alors la formule suivante, à la base de l'algorithme CUSUM :
 	
 	\begin{equation}
-		\forall t \in [1, N], L_k=\ln\left[\frac{\left(\sup_{\theta_0}\prod_{i=1}^{k-1}p_{\theta_0}(y_i)\right)\left(\sup_{\theta_1}\prod_{i=k}^Np_{\theta_1}(y_i)\right)}{\sup_{\tilde\theta}p_{\tilde\theta}(y_i)}\right]
+		\forall t \in [1, N], L_t=\ln\left[\frac{\left(\sup_{\theta_0}\prod_{i=1}^{t-1}p_{\theta_0}(y_i)\right)\left(\sup_{\theta_1}\prod_{i=t}^Np_{\theta_1}(y_i)\right)}{\sup_{\tilde\theta}p_{\tilde\theta}(y_i)}\right]
+	\end{equation}
+	
+	Finalement, l'instant où il est le plus probable de trouver une rupture est celui qui maximise $L_t$. Ainsi, l'estimation par CUSUM du point de rupture d'un signal est :
+	
+	\begin{equation}
+		t_0=\arg\max_{1\le t\le N}L_t
 	\end{equation}
 	
 	\section{Simplification dans le cas de distributions gaussiennes}
