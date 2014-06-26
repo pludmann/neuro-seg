@@ -38,7 +38,7 @@ Son utilisation doit faire place à un apprentissage sur les segments de régime
 	\tableofcontents
 
 	\chapter{Introduction au problème}
-	
+	\section{Motivations}
 		La motivation initiale de ce stage provient de la médecine, et plus particulièrement de la neurologie. Le projet, piloté par le groupe Cognac-G, vise à analyser en détail des signaux physiologiques, issus d'une expérience très simple.
 	\\ \\
 	Le protocole expérimental se décline comme suit :
@@ -63,6 +63,25 @@ Son utilisation doit faire place à un apprentissage sur les segments de régime
 		\caption{Un exemple de signal de marche (enregistré à la ceinture)}
 		\label{ex_signal_back}
 	\end{figure}
+	
+	Sur ces signaux apparaissent de manière claire les différentes phases de l'expérience :
+	\begin{itemize}
+		\item Dans un premier temps, le patient est à l'arrêt, les 6 signaux sont quasiment constants (on n'observe que du bruit)
+		\item Dans une seconde phase, le patient commence à marcher : on observe une phase transitoire entre l'arrêt et la marche dite de croisière
+		\item La troisième phase de l'expérience correspond à la marche de croisière : le patient effectue une dizaine de mètres
+		\item On observe ensuite le demi-tour (particulièrement sur les composantes verticales du signal), qui dure environ 1 seconde
+		\item Puis, on a une nouvelle phase de marche, retour cette fois-ci
+		\item Finalement, le patient s'arrête : on a à nouveau une phase transitoire, puis l'arrêt total du patient (où il ne reste plus que du bruit)
+	\end{itemize}
+	
+	\vspace{1pc}
+	
+	Partant de ces constatations, on peut donc constater que les signaux acquis par les centrales inertielles peuvent être segmentés, qu'on peut isoler les différentes phases de l'expérience. Sur un signal, cela peut être fait de manière manuelle ; néanmoins, pour un neurologue enregistrant de manière régulière ce type d'expérience, il est concevable de désirer des algorithmes robustes permettant de traiter de manière automatique le problème de la détection des points de changement, décomposant ainsi le signal en sous-signaux correspondant à chacune des phases de l'expérience, afin de pouvoir les analyser séparément.
+	
+	\section{Formalisme mathématique}
+	Afin de pouvoir traiter mathématiquement le problème, il nous faut tout d'abord poser des définitions claires sur l'objet du problème : il s'agit donc de définir ce qu'est une rupture, au sens mathématique.
+	\\ \\
+	
 	
 	\chapter{Algorithme CUSUM : résolution du cas d'une seule rupture}
 	
