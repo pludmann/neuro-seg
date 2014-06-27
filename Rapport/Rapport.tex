@@ -430,20 +430,37 @@ nos encadrants seniors Eva Wesfreid et Nicolas Vayatis qui sont à l'origine du 
 	Par exemple sur un signal physiologique de marche où le protocole expérimental donne lieu à un minimum de 5 régimes (Idle, Walk, Turn, Walk, Idle) et donc de 4 ruptures :
 	même si la première rupture calculée est au bon endroit -- sur un changement de régime --
 	elle va en séparer 1 de 4, 2 de 3, 3 de 2 ou 4 de 1.
+	On est bien loin du cadre théorique.
+	
+	
 	
 	\chapter{Cas de plusieurs ruptures : implémentation par fenêtres}	
-	Il a été vu dans la partie précédente que l'implémentation dichotomique du CUSUM débordait du cadre théorique : en effet, on fait à itération l'hypothèse d'une unique rupture dans le signal, alors que l'on désire en détecter plusieurs. De plus, on cherche dans cette approche à comparer entre elles des ruptures sur des signaux qui n'ont a priori aucun rapport les uns les autres. Pour pallier ce défaut, nous proposons ici une approche par fenêtres.
+	
+	
+	
+	Il a été vu dans la partie précédente que l'implémentation dichotomique du CUSUM débordait du cadre théorique :
+	en effet, on fait à itération l'hypothèse d'une unique rupture dans le signal, alors que l'on désire en détecter plusieurs.
+	De plus, on cherche dans cette approche à comparer entre elles des ruptures sur des signaux qui n'ont a priori aucun rapport les uns les autres.
+	Pour pallier ce défaut, nous proposons ici une approche par fenêtres.
+	
 	
 	\section{Principe théorique}
-	L'algorithme CUSUM, tel qu'il est présenté dans le chapitre 2, ne permet de détecter qu'une seule rupture dans un signal donné. Nous traitons ici le cas de signaux ayant un nombre $n$ de ruptures, avec $n \geq 1$. Si l'on désire se servir de l'algorithme CUSUM, pour rester dans le cadre théorique, il nous faudra nous assurer que le signal qu'on observe ne possède qu'une seule rupture.
-	\\ \\
+	
+	
+	L'algorithme CUSUM, tel qu'il est présenté dans le chapitre 2, ne permet de détecter qu'une seule rupture dans un signal donné.
+	Nous traitons ici le cas de signaux ayant un nombre $R$ de ruptures, avec $R \geq 1$.
+	Si l'on désire se servir de l'algorithme CUSUM, pour rester dans le cadre théorique,
+	il nous faudra nous assurer que le signal qu'on observe ne possède qu'une seule rupture.
+	\\
+	
 	Pour cela, en gardant les notations du chapitre 1, supposons que l'on dispose de l'écart minimal entre deux ruptures :
 	\begin{equation*}
-		p = \min_{1 \leq i \leq n-1} (t_{i+1} - t_i)
+		p = \min_{-1 \leq r \leq R-1} (t_{r+1} - t_r)
 	\end{equation*}
 	
-	Ainsi, pour $t \in [p+1, N-p]$, on est assuré d'avoir au plus une rupture dans l'intervalle $[t-p, t+p]$. On peut donc appliquer l'algorithme CUSUM sur des fenêtres centrées en $t$ et de taille $2p+1$. Le principe de l'implémentation par fenêtres est alors d'appliquer l'algorithme CUSUM sur chacun des intervalles $[t-p,t+p]$ pour $t \in [p+1, N-p]$, et de sélectionner ensuite les n meilleures ruptures.
-	\\ \\
+	Ainsi, pour $t \in [p+1, N-p]$, on est assuré d'avoir au plus une rupture dans l'intervalle $[t-p, t+p]$. On peut donc appliquer l'algorithme CUSUM sur des fenêtres centrées en $t$ et de taille $2p+1$. Le principe de l'implémentation par fenêtres est alors d'appliquer l'algorithme CUSUM sur chacun des intervalles $[t-p,t+p]$ pour $t \in [p+1, N-p]$, et de sélectionner ensuite les $R$ meilleures ruptures.
+	\\
+	
 	Pour réduire le problème, simplifions quelque peu l'algorithme CUSUM : on considère ici uniquement l'hypothèse d'une rupture à la date t. On a ainsi, pour $t \in [t-p,t+p]$, deux hypothèses :
 	\begin{equation*}
 			H_0^t : \forall i \in [t-p, t+p], X_i \sim p_{\tilde{\theta}}
@@ -461,12 +478,48 @@ nos encadrants seniors Eva Wesfreid et Nicolas Vayatis qui sont à l'origine du 
 		L_t = \ln \left[ \frac{\prod_{i = t-p}^{t-1} p_{\hat{\theta_0}}(x_i) \prod_{i = t}^{t+p} p_{\hat{\theta_1}}(x_i)}{\prod_{i = t-p}^{t+p} p_{\hat{\tilde{\theta}}}(x_i)} \right]
 	\end{equation}
 	
-	Cette formule se simplifie de la même manière que ce qui a été fait dans le chapitre 2, selon les différents types de changement : en moyenne, en écart-type, ou les deux en même temps. On cherche alors à sélectionner les $n$ instants où il est le plus vraisemblable de trouver une rupture, c'est-à-dire les $n$ plus grands maximas locaux de la suite $(L_t)_{t\in[p+1, N-p]}$.
+	Cette formule se simplifie de la même manière que ce qui a été fait dans le chapitre 2, selon les différents types de changement :
+	en moyenne, en écart-type, ou les deux en même temps. 
+	On cherche alors à sélectionner les $R$ instants où il est le plus vraisemblable de trouver une rupture,
+	c'est-à-dire les $R$ plus grands maximas locaux de la suite $(L_t)_{t\in[p+1, N-p]}$.
+	
+	
 	
 	\chapter{Évaluation des performances}
 	
 	
 	
+	\section{Sur des signaux synthétiques}
+	
+	Ces signaux sont générés en jouant sur 3 critères :
+	
+	\begin{itemize}
+	\item le nombre de ruptures
+	\item l'espace moyen entre les ruptures
+	\item l'espace minimal entre mes ruptures\\
+	\end{itemize}
+	
+	Les valeurs de l'espace entre ruptures sont tirés uniforment sur l'intervalle ouvert de $\mathbb R^{+*}$ qui s'étend de l'espace minimal au double de l'espace moyen moins l'espace minimal.
+	
+	On génère ainsi 100 signaux unidimensionnels pour un triplet d'argument donné afin de calculer dessus le RMSD -- la déviation quadratique moyenne --
+	 mais aussi le taux d'erreur moyen et son écart-type.
+	Le taux d'erreur étant le nombre de ruptures calculées à une distance supérieure de 10\% de l'espace minimal d'une rupture réelle sur le nombre totale de ruptures (réelles ou calculées, il y en a autant).
+	Remarquons qu'on ne pénalise pas les doublons de ruptures calculées sur une vraie rupture, ils ne sont pas problématique et peuvent être effacés \emph{a posteriori}.
+	
+	
+	\subsection{Selon le nombre de ruptures}
+	
+	
+	On fixe l'espace minimal à 100 réalisations, en estimant que l'on cherche à débusquer des régimes physiologiques de l'ordre de la seconde et que les capteurs travaillent à 100Hz.
+	L'espace moyen est reglé à 500 points (3 à 4000 points par acquisitions présentant environ 6 ruptures).
+	Et on fait varier le nombre de points de ruptures de 1 à 20, ce qui va largement plus loin que la demande réelle.
+	\\
+	
+	On peut s'attendre à ce que l'implémentation la plus incapacitée par l'augmentation du nombre de ruptures soit l'approche dichotomique car on s'éloigne alors de plus en plus du cadre théorique.
+	Tandis que l'approche par fenêtre ne fait pas la différence : il ne devrait pas y avoir de changement notable dans sa précision.
+	
+	
+	\section{Sur des signaux physiologiques}
 	
 	
 	
