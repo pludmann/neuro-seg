@@ -130,13 +130,13 @@ Son utilisation doit faire place à un apprentissage sur les segments de régime
 	\begin{equation}
 	\begin{array}{ll}
 		\forall t \in [1, N],l(H_t) = \prod_{i = 1}^{t-1} p_1(x_i) \prod_{i = t}^{N} p_2(x_i) \\
-		l(H_0) = \prod_{i = 1}^N \tilde{p_0}(x_i) \\
+		l(H_0) = \prod_{i = 1}^N p_0(x_i) \\
 	\end{array}	
 	\end{equation}
 
 	Introduisons alors le rapport de vraisemblance des hypothèses :
 	\begin{equation}
-		\forall t \in [1, N], \Lambda_t = \frac{l(H_t)}{l(H_0)} = \frac{\prod_{i = 1}^{t-1} p_1(x_i) \prod_{i = t}^{N} p_2(x_i)}{\prod_{i = 1]}^{N} \tilde{p_0}(x_i)}
+		\forall t \in [1, N], \Lambda_t = \frac{l(H_t)}{l(H_0)} = \frac{\prod_{i = 1}^{t-1} p_1(x_i) \prod_{i = t}^{N} p_2(x_i)}{\prod_{i = 1]}^{N} p_0(x_i)}
 	\end{equation}
 
 	Pour simplifier, on fera ici l'hypothèse que nos lois sont issues d'une famille de lois indexée par un paramètre $\theta \in \mathbb{R}^d$. On a ainsi :
@@ -167,7 +167,7 @@ Son utilisation doit faire place à un apprentissage sur les segments de régime
 		p_{\mu, \sigma}(y) = \frac1{\sqrt{2 \pi} \sigma} \exp \left[ -\frac12 \left( \frac{y - \mu}{\sigma} \right)^2 \right]
 	\end{equation*}
 
-	Les estimateurs aux maximas de vraisemblance de la loi normale sont alors connus (cf. Larry Wasserman, \textit{All of Statistics : A concise course in statistical inference} par exemple) :
+	Les estimateurs des maxima de vraisemblance de la loi normale sont alors connus (cf. Larry Wasserman, \textit{All of Statistics : A concise course in statistical inference} par exemple) :
 	\begin{equation}
 	\left\{
 	\begin{array}{ll}
