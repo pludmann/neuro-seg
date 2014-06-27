@@ -1,4 +1,4 @@
-function [N, P, sumdiff, diff, np] = offline_efficiency_test(n, p, c, plt)
+function [Y, N, P, sumdiff, diff, np] = offline_efficiency_test(n, p, c, plt)
 
 %[N, P, sumdiff, diff, np] = offline_efficiency_test(n,p,c,plt) génère un
 %signal aléatoire à n ruptures à partir de (n+1) lois normales centrées,
