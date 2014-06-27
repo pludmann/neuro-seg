@@ -229,16 +229,59 @@ Son utilisation doit faire place à un apprentissage sur les segments de régime
 	\end{equation}
 	La seule différence intervient dans l'estimateur de l'écart-type : au lieu d'utiliser un estimateur sur l'ensemble du signal (ce qui est possible si l'on fait l'hypothèse d'une moyenne constante), on utilise ici des estimateurs différents pour la moyenne sur chaque portion du signal.
 	
-	\section{Mise en œuvre sur un cas particulier}
-	Nous n'allons pas immédiatement traîter les signaux physiologiques vus précédemment : ceux-ci comportent plusieurs ruptures, l'algorithme CUSUM ne permettant d'en détecter qu'une seule. On se place ici dans le cas d'un changement en écart-type de $\sigma_1 = 1$ à $\sigma_2 = 3$, à l'instant $t_0 = 201$.
+	\section{Mise en œuvre sur des cas particuliers}
+	Nous n'allons pas immédiatement traîter les signaux physiologiques vus précédemment : ceux-ci comportent plusieurs ruptures, l'algorithme CUSUM ne permettant d'en détecter qu'une seule. Les signaux utilisés dans cette partie sont des signaux synthétiques, obtenus grâce à MATLAB.
+
+	\subsection{Détection d'un changement d'écart-type}
+	
+	On se place dans le cas d'un changement en écart-type de $\sigma_1 = 1$ à $\sigma_2 = 3$, à l'instant $t_0 = 201$.
 	
 	\begin{figure}[h]
-		\includegraphics[scale=0.4]{test_signal.png}
+		\includegraphics[scale=0.4]{test_signal_std.png}
 		\caption{Pour $t \leq 200$, $X_t \sim \mathcal{N}(0, 1)$ ; pour $t > 200$, $X_t \sim \mathcal{N}(0, 3)$}
-		\label{test_signal}
+		\label{test_signal_std}
 	\end{figure}
 	
-	On se place donc dans le second cas. 
+	L'équation \ref{stdchange} permet alors d'obtenir la figure \ref{llr_test_std}
+	
+	\begin{figure}[h]
+		\includegraphics[scale=0.4]{llr_test_std.png}
+		\caption{\textit{Log-likelihood ratio} du signal précédent}
+		\label{llr_test_std}
+	\end{figure}
+	
+	Ce comportement est le comportement typique de la courbe d'un \textit{log-likelihood ratio} sur un signal gaussien comportant une rupture. On observe ici que le maximum de la courbe est à l'instant 203, avec un \textit{log-likelihood ratio} $L_203 = 97,04$. On a donc l'estimateur par CUSUM du point de rupture :
+	\begin{equation*}
+		\hat{t_0} = 203 ; \hat{t_0} - t_0 = 2;
+	\end{equation*}
+	
+	Ainsi, l'estimateur de points de rupture par CUSUM semble robuste dans le cas d'un changement par écart-type.
+	%RMSD sur le CUSUM std...
+	
+	\subsection{Détection d'un changement de moyenne}
+	On se place dans le cas d'un changement en moyenne de $\mu_1 = 10$ à $\mu_2 = 20$, avec $t_0 = 201$.
+	
+	\begin{figure}[h]
+		\includegraphics[scale=0.35]{test_signal_mean.png}
+		\caption{Pour $t \leq 200$, $X_t \sim \mathcal{N}(10, 1)$ ; pour $t > 200$, $X_t \sim \mathcal{N}(20, 1)$}
+		\label{test_signal_mean}
+	\end{figure}
+	
+	On utilise cette fois l'équation \ref{meanchange} pour obtenir la figure \ref{llr_test_mean}.
+	
+	\begin{figure}[h]
+		\includegraphics[scale=0.4]{llr_test_mean.png}
+		\caption{\textit{Log-likelihood ratio} du signal précédent}
+		\label{llr_test_mean}
+	\end{figure}
+	
+	On obtient donc ici l'estimateur du point de rupture par CUSUM, avec un score de 192 :
+	\begin{equation*}
+		\hat{t_0} = 201 ; \hat{t_0} - t_0 = 0
+	\end{equation*}
+	
+	De même que dans le cas précédent, on observe la robustesse de l'estimateur par CUSUM du point de rupture de ce signal.
+	%RMSD CUSUM mean
 	
 	\chapter{Cas de plusieurs ruptures : implémentation dichotomique}
 	
