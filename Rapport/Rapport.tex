@@ -97,18 +97,19 @@ Son utilisation doit faire place à un apprentissage sur les segments de régime
 	On comprend alors la définition donnée par la littérature d'un point de rupture à un instant $t_0$ :
 	\begin{equation}
 	\begin{array}{ll}
-			\forall t \in [1, t_0-1], X_i \sim p_0 \\
-			 \forall t \in [t_0, N], X_i \sim p_1 \\
+			\forall t \in [1, t_0-1], X_i \sim p_1 \\
+			 \forall t \in [t_0, N], X_i \sim p_2 \\
 	\end{array}
 	\end{equation}
+	%Ref. needed
 	
 	On généralise de manière évidente au cas de $n$ ruptures aux points $(t_i)_{i \in \{0, n-1\}}$ :
 	
 	\begin{equation}
 	\begin{array}{lll}
 		\forall i \in \{0, n-1\}, \\
-		\forall t \in \{t_{i-1}, t_i-1\}, X_i \sim p_{i-1} \\
-		\forall t \in \{t_i, t_{i+1}-1\}, X_i \sim p_i
+		\forall t \in \{t_{i-1}, t_i-1\}, X_i \sim p_i \\
+		\forall t \in \{t_i, t_{i+1}-1\}, X_i \sim p_{i+1}
 	\end{array}
 	\end{equation}
 	Où l'on a posé : $t_{-1} = 1$ et $t_n = N$.
@@ -127,26 +128,26 @@ Son utilisation doit faire place à un apprentissage sur les segments de régime
 	La fonction de vraisemblance quantifie la vraisemblance d'une hypothèse étant donnée une observation. Ici, l'observation faite est le signal, qui est la réalisation d'un nombre fini de variables aléatoires. On cherche à comparer l'hypothèse $H_t$ qu'à l'instant $t \in [1, N]$, il y a une rupture, à l'hypothèse $H_0$ qu'il n'y en a pas dans le signal. Les vraisemblances de ces hypothèses sont :
 	\begin{equation}
 	\begin{array}{ll}
-		\forall t \in [1, N],l(H_t) = \prod_{i = 1}^{t-1} p_0(x_i) \prod_{i = t}^{N} p_1(x_i) \\
+		\forall t \in [1, N],l(H_t) = \prod_{i = 1}^{t-1} p_1(x_i) \prod_{i = t}^{N} p_2(x_i) \\
 		l(H_0) = \prod_{i = 1}^N \tilde{p_0}(x_i) \\
 	\end{array}	
 	\end{equation}
 	
 	Introduisons alors le rapport de vraisemblance des hypothèses :
 	\begin{equation}
-		\forall t \in [1, N], \Lambda_t^{p_0, p_1} = \frac{l(H_t)}{l(H_0)} = \frac{\prod_{i = 1}^{t-1} p_0(x_i) \prod_{i = t}^{N} p_1(x_i)}{\prod_{i = 1]}^{N} \tilde{p_0}(x_i)}
+		\forall t \in [1, N], \Lambda_t = \frac{l(H_t)}{l(H_0)} = \frac{\prod_{i = 1}^{t-1} p_1(x_i) \prod_{i = t}^{N} p_2(x_i)}{\prod_{i = 1]}^{N} \tilde{p_0}(x_i)}
 	\end{equation}
 	
 	Pour simplifier, on fera ici l'hypothèse que nos lois sont issues d'une famille de lois indexée par un paramètre $\theta \in \mathbb{R}^d$. On a ainsi :
 	
 	\begin{equation*}
-		p_0 = p_{\theta_0} ; p_1 = p_{\theta_1}
+		p_1 = p_{\theta_1} ; p_2 = p_{\theta_2}
 	\end{equation*}
 	
-	On ne connaît pas, a priori, les paramètres $\theta_0$ et $\theta_1$. Pour les estimer, on va donc utiliser l'estimation du maximum de vraisemblance. Il en découle alors la formule suivante, à la base de l'algorithme CUSUM, qui donne le logarithme du rapport de vraisemblance :
+	On ne connaît pas, a priori, les paramètres $\theta_1$ et $\theta_2$. Pour les estimer, on va donc utiliser l'estimation du maximum de vraisemblance. Il en découle alors la formule suivante, à la base de l'algorithme CUSUM, qui donne le logarithme du rapport de vraisemblance (\textit{log-likelihood ratio}, en anglais) :
 	
 	\begin{equation}
-		\forall t \in [1, N], L_t=\ln\left[\frac{\left(\sup_{\theta_0}\prod_{i=1}^{t-1}p_{\theta_0}(y_i)\right)\left(\sup_{\theta_1}\prod_{i=t}^Np_{\theta_1}(y_i)\right)}{\sup_{\tilde\theta}p_{\tilde\theta}(y_i)}\right]
+		\forall t \in [1, N], L_t=\ln\left[\frac{\left(\sup_{\theta_1}\prod_{i=1}^{t-1}p_{\theta_1}(y_i)\right)\left(\sup_{\theta_2}\prod_{i=t}^Np_{\theta_2}(y_i)\right)}{\sup_{\theta_0}p_{\theta_0}(y_i)}\right]
 		\label{log_likelihood_ratio}
 	\end{equation}
 	
@@ -173,6 +174,7 @@ Son utilisation doit faire place à un apprentissage sur les segments de régime
 		\hat{\sigma} = \sqrt{\frac{1}{n} \sum_{i=1}^n (x_i - \hat{\mu})} \\
 	\end{array}
 	\right.
+	\label{estimators}
 	\end{equation}
 	
 	Ceci nous permet alors de simplifier l'expression de $L_t$. Notons que l'hypothèse du gaussien ramène le problème du changement de loi à trois cas : changement de moyenne, changement d'écart-type, et changement de moyenne et d'écart-type.
@@ -182,19 +184,61 @@ Son utilisation doit faire place à un apprentissage sur les segments de régime
 	
 	\begin{equation*}
 	\begin{array}{ll}
-		L_t = \sum_{i=1}^{t-1} \left[-\ln (\sqrt{2 \pi} \sigma)-\frac{1}{2}\left( \frac{y_i-\hat{\mu_0}}{\sigma} \right) ^2 \right] + \sum_{i=t}^{N} \left[-\ln (\sqrt{2 \pi} \sigma)-\frac{1}{2}\left( \frac{y_i-\hat{\mu_1}}{\sigma} \right) ^2 \right] \\
-		~~~~~~~~~~~~~~~~~~~~~~~~ - \sum_{i=1}^{N} \left[-\ln (\sqrt{2 \pi} \sigma)-\frac{1}{2}\left( \frac{y_i-\hat{\tilde{\mu}}}{\sigma} \right) ^2 \right] \\
+		L_t = \sum_{i=1}^{t-1} \left[-\ln (\sqrt{2 \pi} \sigma)-\frac{1}{2}\left( \frac{y_i-\hat{\mu_1}}{\sigma} \right) ^2 \right] + \sum_{i=t}^{N} \left[-\ln (\sqrt{2 \pi} \sigma)-\frac{1}{2}\left( \frac{y_i-\hat{\mu_2}}{\sigma} \right) ^2 \right] \\
+		~~~~~~~~~~~~~~~~~~~~~~~~ - \sum_{i=1}^{N} \left[-\ln (\sqrt{2 \pi} \sigma)-\frac{1}{2}\left( \frac{y_i-\hat{\mu_0}}{\sigma} \right) ^2 \right] \\
 	\end{array}
 	\end{equation*}
 	
 	Après calculs (À PRÉCISER ICI), on obtient :
 	\begin{equation}
-		\forall t \in [1, N], L_t = \frac{1}{2 \sigma ^2}\left[(k-1)\hat{\mu_0}^2 + (N - k + 1)\hat{\mu_1}^2 - N\hat{\tilde{\mu}}^2 \right]
+		\forall t \in [1, N], L_t = \frac{1}{2 \sigma ^2}\left[(t-1)\hat{\mu_1}^2 + (N - t + 1)\hat{\mu_2}^2 - N\hat{\mu_0}^2 \right]
+		\label{meanchange}
 	\end{equation}
 	
 	\subsection{Changement en écart-type}
+	Faisant cette fois l'hypothèse d'une moyenne constante sur l'ensemble du signal, le paramètre $\theta$ est ici uniquement l'écart-type $\sigma$. \ref{log_likelihood_ratio} se réécrit donc, pour $t \in [1, N]$ :
+	
+	\begin{equation*}
+	\begin{array}{ll}
+			L_t = \sum_{i=1}^{t-1} \left[-\ln (\sqrt{2 \pi} \hat{\sigma_1}-\frac{1}{2}\left( \frac{y_i-\mu}{\hat{\sigma_1}} \right) ^2 \right] + \sum_{i=t}^{N} \left[-\ln (\sqrt{2 \pi} \hat{\sigma_2)}-\frac{1}{2}\left( \frac{y_i-\mu}{\hat{\sigma_2}} \right) ^2 \right] \\
+			~~~~~~~~~~~~~~~~~~~~~~~~ - \sum_{i=1}^{N} \left[-\ln (\sqrt{2 \pi} \hat{\sigma_0})-\frac{1}{2}\left( \frac{y_i-\mu}{\hat{\sigma_0}} \right) ^2 \right] \\
+		\end{array}
+	\end{equation*}
+	
+	Ainsi :
+	\begin{equation*}
+	L_t=
+	-\frac 12\left[\frac 1{\hat{\sigma_1}^2}\sum_{i=1}^{t-1}(y_i-\mu)^2
+	+\frac 1{\hat{\sigma_2}^2}\sum_{i=t}^N(y_i-\mu)^2
+	-\frac 1{\hat{\sigma_0}^2}\sum_{i=1}^N(y_i-\mu)^2\right]\]
+	\[~~~~~~~~~~~~~~~~~~~~~~~~+N\ln(\hat{\sigma_0})-(k-1)\ln(\hat{\sigma_1})-(N-k+1)\ln(\hat{\sigma_2})
+	\end{equation*}
+	
+	En vertu de \ref{estimators}, le premier terme de la somme se simplifie : il est en effet nul. On obtient alors : 
+	
+	\begin{equation}
+		\forall t \in [1, N], L_t = N\ln (\hat{\sigma_0}) - (t-1)\ln (\hat{\sigma_1}) - (N-t+1)\ln (\hat{\sigma_2})
+		\label{stdchange}
+	\end{equation}
 	
 	\subsection{Changement en moyenne et en écart-type}
+	Dans ce dernier cas, on doit estimer à la fois la moyenne et l'écart-type des différentes portions du signal. Les calculs sont identiques à ceux menés dans le cas d'un changement en écart-type, à la différence près que l'on a trois estimateurs différents sur la moyenne. On obtient un résultat quasiment identique :
+	\begin{equation}
+		\forall t \in [1,N], L_t = N\ln (\hat{\sigma_0}) - (t-1) \ln (\hat{\sigma_1}) - (N - t + 1) \ln (\hat{\sigma_2})
+		\label{bothchange}
+	\end{equation}
+	La seule différence intervient dans l'estimateur de l'écart-type : au lieu d'utiliser un estimateur sur l'ensemble du signal (ce qui est possible si l'on fait l'hypothèse d'une moyenne constante), on utilise ici des estimateurs différents pour la moyenne sur chaque portion du signal.
+	
+	\section{Mise en œuvre sur un cas particulier}
+	Nous n'allons pas immédiatement traîter les signaux physiologiques vus précédemment : ceux-ci comportent plusieurs ruptures, l'algorithme CUSUM ne permettant d'en détecter qu'une seule. On se place ici dans le cas d'un changement en écart-type de $\sigma_1 = 1$ à $\sigma_2 = 3$, à l'instant $t_0 = 201$.
+	
+	\begin{figure}[h]
+		\includegraphics[scale=0.4]{test_signal.png}
+		\caption{Pour $t \leq 200$, $X_t \sim \mathcal{N}(0, 1)$ ; pour $t > 200$, $X_t \sim \mathcal{N}(0, 3)$}
+		\label{test_signal}
+	\end{figure}
+	
+	On se place donc dans le second cas. 
 	
 	\chapter{Cas de plusieurs ruptures : implémentation dichotomique}
 	
