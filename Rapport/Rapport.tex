@@ -21,12 +21,11 @@
   
 Il s'agit de segmenter des signaux de marche,
 dans le cadre d'une collaboration du CMLA (ENS Cachan) et Cognac-G (Paris V).
-%Quels sont les travaux déjà accomplis dans ce domaine dans le monde?
 
 On propose donc ici des algorithmes pour détecter des ruptures.
 Cela permet en aval aux médecins de mieux étudier les différents régimes de marche.
 Un algorithme efficace et rapide semble encore manquer ;
-la marche étant souvent abordée sur de longues durées.
+la marche étant souvent abordée sur de longues durées \cite{Was}.
 
 Si la détection d'un unique changement trouve des implémentations reconnues,
 on a cherché à généraliser à de multiples ruptures.
@@ -224,8 +223,8 @@ Son utilisation doit faire place à un apprentissage sur les segments de régime
 		\forall t \in [\![1\,; N]\!], \Lambda_t = \frac{l(H_t)}{l(H_0)} = \frac{\prod_{i = 1}^{t-1} p_0(x_i) \prod_{i = t}^{N} p_1(x_i)}{\prod_{i = 1]}^{N} \tilde p(x_i)}
 	\end{equation}
 	
-	Pour simplifier, on fera ici l'hypothèse que nos lois sont issues d'une famille de lois indexée par un paramètre $\theta \in \mathbb{R}^d$.
-	% POURQUOI R^d ?
+	Pour simplifier, on fera ici l'hypothèse que nos lois sont issues d'une famille de lois indexée par un paramètre $\theta$ qui vit dans un espace donné.
+
 	On a ainsi :
 	
 	\begin{equation*}
@@ -241,8 +240,8 @@ Son utilisation doit faire place à un apprentissage sur les segments de régime
 		\label{log_likelihood_ratio}
 	\end{equation}
 	
-	Finalement, l'instant où il est le plus probable de trouver une rupture est celui qui maximise $L_t$ -- qui donne le maximum de vraissemblance estimée (\emph{maximum likelihood estimate}).
-	Ainsi, l'estimation par CUSUM du point de rupture d'un signal est :
+	Finalement, l'instant où il est le plus probable de trouver une rupture est celui qui maximise $L_t$.
+	Ainsi, l'estimation de maximum de vraissemblance (\emph{maximum likelihood estimation}) par CUSUM du point de rupture d'un signal est :
 	
 	\begin{equation}
 		\hat{t_0}=\arg\max_{1\le t\le N}L_t
@@ -251,10 +250,9 @@ Son utilisation doit faire place à un apprentissage sur les segments de régime
 	
 	\section{Simplification dans le cas de distributions gaussiennes}
 
-% RIEN PIGER ICI
 	
 	Dans le cas général, la formule \ref{log_likelihood_ratio} est peu exploitable en raison de la présence de bornes supérieures.
-	Afin de simplifier le problème %des estimateurs au maximum de vraisemblance
+	Afin de simplifier le problème des estimateurs au maximum de vraisemblance
 	, on peut se proposer de faire une hypothèse sur la famille de lois $(p_\theta)_{\theta \in \mathbb{R}^d}$.
 	\\
 	
@@ -264,19 +262,9 @@ Son utilisation doit faire place à un apprentissage sur les segments de régime
 		p_{\mu, \sigma}(y) = \frac1{\sigma\sqrt{2 \pi}} \exp \left[ -\frac12 \left( \frac{y - \mu}{\sigma} \right)^2 \right]
 	\end{equation*}
 	
-%	Les estimateurs aux maximas de vraisemblance de la loi normale sont alors connus (cf. Larry Wasserman, \textit{All of Statistics : A concise course in statistical inference} par exemple) :
-%	\begin{equation}
-%	\left\{
-%	\begin{array}{ll}
-%		\hat{\mu} = \frac{1}{n} \sum_{i=1}^n x_i \\
-%		\hat{\sigma} = \sqrt{\frac{1}{n} \sum_{i=1}^n (x_i - \hat{\mu})^2} \\
-%	\end{array}
-%	\right.
-%	\label{estimators}
-%	\end{equation}
-	
+	Les estimateurs aux maximas de vraisemblance de la loi normale sont alors connus \cite{MLE}.
 	Ceci nous permet alors de simplifier l'expression de $L_t$
-	car les bornes supérieures sont atteintes aux estimateurs.
+	car les bornes supérieures sont atteintes par ces estimateurs.
 	Notons que l'hypothèse du gaussien ramène le problème du changement de loi à trois cas :
 	changement de moyenne, changement d'écart-type, et changement de moyenne et d'écart-type.
 	
@@ -297,6 +285,9 @@ Son utilisation doit faire place à un apprentissage sur les segments de régime
 		\forall t \in [\![1\,; N]\!], L_t = \frac{1}{2 \sigma ^2}\left[(t-1){\mu_0}^2 + (N - t + 1){\mu_1}^2 - N{\tilde\mu}^2 \right]
 		\label{meanchange}
 	\end{equation}
+	
+	$\sigma$ étant donc fixé au préalable. Et $\tilde\mu$, $\mu_0$ et $\mu_1$ sont les estimateurs $\frac1n\sum_{i=1}^nx_i$ du signal respectivement de 1 à $N$, de 1 à $t-1$ et de $t$ à $N$.
+	\\
 	
 	On se place dans le cas d'un changement en moyenne de $\mu_1 = 10$ à $\mu_2 = 20$, avec $t_0 = 201$.
 	
@@ -340,6 +331,8 @@ Son utilisation doit faire place à un apprentissage sur les segments de régime
 		\forall t \in [\![1\,; N]\!], L_t = N\ln (\tilde{\sigma}) - (t-1)\ln ({\sigma_0}) - (N-t+1)\ln ({\sigma_1})
 		\label{stdchange}
 	\end{equation}
+	$\mu$ étant préalablement fixé. Et $\tilde\sigma$, $\sigma_0$ et $\sigma_1$ sont les estimateurs $\sqrt{\frac1n\sum_{i=1}^n(x_i-\mu)^2}$ du signal respectivement de 1 à $N$, de 1 à $t-1$ et de $t$ à $N$.
+	\\
 	
 		On se place dans le cas d'un changement en écart-type de $\sigma_0 = 1$ à $\sigma_1 = 3$, à l'instant $t_0 = 201$.
 	
@@ -383,7 +376,12 @@ Son utilisation doit faire place à un apprentissage sur les segments de régime
 		\forall t \in [\![1\,;N]\!], L_t = N\ln (\tilde\sigma) - (t-1) \ln (\sigma_0) - (N - t + 1) \ln (\sigma_1)
 		\label{bothchange}
 	\end{equation}
-	La seule différence intervient dans l'estimateur de l'écart-type : au lieu d'utiliser une moyenne fixée sur l'ensemble du signal (ce qui peut se traduire légitimement par son estimateur sur la globalité du signal), on utilise ici les estimateurs  de la moyenne sur les différentes portions du signal.	
+	La seule différence intervient dans l'estimateur de l'écart-type :
+	au lieu d'utiliser une moyenne fixée sur l'ensemble du signal (ce qui peut se traduire légitimement par son estimateur sur la globalité du signal),
+	on utilise ici les estimateurs  de la moyenne sur les différentes portions du signal :
+	
+	$\tilde\mu$, $\mu_0$ et $\mu_1$ sont les estimateurs $\frac1n\sum_{i=1}^nx_i$ du signal respectivement de 1 à $N$, de 1 à $t-1$ et de $t$ à $N$.
+	Et $\tilde\sigma$, $\sigma_0$ et $\sigma_1$ sont les estimateurs $\sqrt{\frac1n\left[\sum_{i=1}^nx_i^2-(\sum_{i=1}^nx_i)^2\right]}$ du signal respectivement de 1 à $N$, de 1 à $t-1$ et de $t$ à $N$.
 	
 	\subsection{Détection d'un changement de moyenne}
 	
