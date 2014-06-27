@@ -124,17 +124,17 @@ Son utilisation doit faire place à un apprentissage sur les segments de régime
 	\\ \\
 	Dans le formalisme précédent, on conçoit que les méthodes de détection de rupture se fondent sur des outils statistiques. L'idée de base de l'algorithme CUSUM hors ligne est la suivante : comparer l'hypothèse qu'il existe une rupture dans le signal considéré à l'hypothèse qu'il n'y en a pas. L'outil utilisé pour cette comparaison est la notion de vraisemblance. Pour simplifier, on fera maintenant l'hypothèse d'indépendance des variables aléatoires $(X_i)_{i \in [1,N]}$.
 	\\ \\
-	La fonction de vraisemblance quantifie la vraisemblance d'une hypothèse étant donnée une observation. Ici, l'observation faite est le signal, qui est la réalisation d'un nombre fini de variables aléatoires. On cherche à comparer l'hypothèse $H_t$ qu'à l'instant $t \in [1, N]$, il y a une rupture, à l'hypothèse $H$ qu'il n'y en a pas dans le signal. Les vraisemblances de ces hypothèses sont :
+	La fonction de vraisemblance quantifie la vraisemblance d'une hypothèse étant donnée une observation. Ici, l'observation faite est le signal, qui est la réalisation d'un nombre fini de variables aléatoires. On cherche à comparer l'hypothèse $H_t$ qu'à l'instant $t \in [1, N]$, il y a une rupture, à l'hypothèse $H_0$ qu'il n'y en a pas dans le signal. Les vraisemblances de ces hypothèses sont :
 	\begin{equation}
 	\begin{array}{ll}
 		\forall t \in [1, N],l(H_t) = \prod_{i = 1}^{t-1} p_0(x_i) \prod_{i = t}^{N} p_1(x_i) \\
-		l(H) = \prod_{i = 1}^N \tilde{p_0}(x_i) \\
+		l(H_0) = \prod_{i = 1}^N \tilde{p_0}(x_i) \\
 	\end{array}	
 	\end{equation}
 	
 	Introduisons alors le rapport de vraisemblance des hypothèses :
 	\begin{equation}
-		\forall t \in [1, N], \Lambda_t^{p_0, p_1} = \frac{l(H_t)}{l(H)} = \frac{\prod_{i = 1}^{t-1} p_0(x_i) \prod_{i = t}^{N} p_1(x_i)}{\prod_{i = 1]}^{N} \tilde{p_0}(x_i)}
+		\forall t \in [1, N], \Lambda_t^{p_0, p_1} = \frac{l(H_t)}{l(H_0)} = \frac{\prod_{i = 1}^{t-1} p_0(x_i) \prod_{i = t}^{N} p_1(x_i)}{\prod_{i = 1]}^{N} \tilde{p_0}(x_i)}
 	\end{equation}
 	
 	Pour simplifier, on fera ici l'hypothèse que nos lois sont issues d'une famille de lois indexée par un paramètre $\theta \in \mathbb{R}^d$. On a ainsi :
@@ -143,20 +143,58 @@ Son utilisation doit faire place à un apprentissage sur les segments de régime
 		p_0 = p_{\theta_0} ; p_1 = p_{\theta_1}
 	\end{equation*}
 	
-	On ne connaît pas, a priori, les paramètres $\theta_0$ et $\theta_1$. Pour les estimer, on va donc utiliser l'estimation du maximum de vraisemblance. Il en découle alors la formule suivante, à la base de l'algorithme CUSUM :
+	On ne connaît pas, a priori, les paramètres $\theta_0$ et $\theta_1$. Pour les estimer, on va donc utiliser l'estimation du maximum de vraisemblance. Il en découle alors la formule suivante, à la base de l'algorithme CUSUM, qui donne le logarithme du rapport de vraisemblance :
 	
 	\begin{equation}
 		\forall t \in [1, N], L_t=\ln\left[\frac{\left(\sup_{\theta_0}\prod_{i=1}^{t-1}p_{\theta_0}(y_i)\right)\left(\sup_{\theta_1}\prod_{i=t}^Np_{\theta_1}(y_i)\right)}{\sup_{\tilde\theta}p_{\tilde\theta}(y_i)}\right]
+		\label{log_likelihood_ratio}
 	\end{equation}
 	
 	Finalement, l'instant où il est le plus probable de trouver une rupture est celui qui maximise $L_t$. Ainsi, l'estimation par CUSUM du point de rupture d'un signal est :
 	
 	\begin{equation}
-		t_0=\arg\max_{1\le t\le N}L_t
+		\hat{t_0}=\arg\max_{1\le t\le N}L_t
 	\end{equation}
 	
 	\section{Simplification dans le cas de distributions gaussiennes}
+	Dans le cas général, la formule \ref{log_likelihood_ratio} est peu exploitable en raison de la présence de bornes supérieures. Afin de simplifier le problème des estimateurs au maximum de vraisemblance, on peut se proposer de faire une hypothèse sur la famille de lois $(p_\theta)_{\theta \in \mathbb{R}^d}$.
+	\\ \\
+	On suppose donc, à partir de maintenant, que chacune des variables aléatoires qui composent le signal suit une loi gaussienne, soit :
 	
+	\begin{equation*}
+		p_{\mu, \sigma}(y) = \frac1{\sqrt{2 \pi} \sigma} \exp \left[ -\frac12 \left( \frac{y - \mu}{\sigma} \right)^2 \right]
+	\end{equation*}
+	
+	Les estimateurs aux maximas de vraisemblance de la loi normale sont alors connus (cf. Larry Wasserman, \textit{All of Statistics : A concise course in statistical inference} par exemple) :
+	\begin{equation}
+	\left\{
+	\begin{array}{ll}
+		\hat{\mu} = \frac{1}{n} \sum_{i=1}^n x_i \\
+		\hat{\sigma} = \sqrt{\frac{1}{n} \sum_{i=1}^n (x_i - \hat{\mu})} \\
+	\end{array}
+	\right.
+	\end{equation}
+	
+	Ceci nous permet alors de simplifier l'expression de $L_t$. Notons que l'hypothèse du gaussien ramène le problème du changement de loi à trois cas : changement de moyenne, changement d'écart-type, et changement de moyenne et d'écart-type.
+	
+	\subsection{Changement en moyenne}
+	Faisant l'hypothèse d'un écart-type constant sur l'ensemble du signal, le paramètre $\theta$ est ici uniquement la moyenne $\mu$. \ref{log_likelihood_ratio} se réécrit donc, pour $t \in [1,N]$ :
+	
+	\begin{equation*}
+	\begin{array}{ll}
+		L_t = \sum_{i=1}^{t-1} \left[-\ln (\sqrt{2 \pi} \sigma)-\frac{1}{2}\left( \frac{y_i-\hat{\mu_0}}{\sigma} \right) ^2 \right] + \sum_{i=t}^{N} \left[-\ln (\sqrt{2 \pi} \sigma)-\frac{1}{2}\left( \frac{y_i-\hat{\mu_1}}{\sigma} \right) ^2 \right] \\
+		~~~~~~~~~~~~~~~~~~~~~~~~ - \sum_{i=1}^{N} \left[-\ln (\sqrt{2 \pi} \sigma)-\frac{1}{2}\left( \frac{y_i-\hat{\tilde{\mu}}}{\sigma} \right) ^2 \right] \\
+	\end{array}
+	\end{equation*}
+	
+	Après calculs (À PRÉCISER ICI), on obtient :
+	\begin{equation}
+		\forall t \in [1, N], L_t = \frac{1}{2 \sigma ^2}\left[(k-1)\hat{\mu_0}^2 + (N - k + 1)\hat{\mu_1}^2 - N\hat{\tilde{\mu}}^2 \right]
+	\end{equation}
+	
+	\subsection{Changement en écart-type}
+	
+	\subsection{Changement en moyenne et en écart-type}
 	
 	\chapter{Cas de plusieurs ruptures : implémentation dichotomique}
 	
