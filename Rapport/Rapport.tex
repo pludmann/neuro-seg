@@ -431,12 +431,37 @@ nos encadrants seniors Eva Wesfreid et Nicolas Vayatis qui sont à l'origine du 
 	même si la première rupture calculée est au bon endroit -- sur un changement de régime --
 	elle va en séparer 1 de 4, 2 de 3, 3 de 2 ou 4 de 1.
 	
-	\chapter{Cas de plusieurs ruptures : implémentation par fenêtres}
+	\chapter{Cas de plusieurs ruptures : implémentation par fenêtres}	
+	Il a été vu dans la partie précédente que l'implémentation dichotomique du CUSUM débordait du cadre théorique : en effet, on fait à itération l'hypothèse d'une unique rupture dans le signal, alors que l'on désire en détecter plusieurs. De plus, on cherche dans cette approche à comparer entre elles des ruptures sur des signaux qui n'ont a priori aucun rapport les uns les autres. Pour pallier ce défaut, nous proposons ici une approche par fenêtres.
 	
+	\section{Principe théorique}
+	L'algorithme CUSUM, tel qu'il est présenté dans le chapitre 2, ne permet de détecter qu'une seule rupture dans un signal donné. Nous traitons ici le cas de signaux ayant un nombre $n$ de ruptures, avec $n \geq 1$. Si l'on désire se servir de l'algorithme CUSUM, pour rester dans le cadre théorique, il nous faudra nous assurer que le signal qu'on observe ne possède qu'une seule rupture.
+	\\ \\
+	Pour cela, en gardant les notations du chapitre 1, supposons que l'on dispose de l'écart minimal entre deux ruptures :
+	\begin{equation*}
+		p = \min_{1 \leq i \leq n-1} (t_{i+1} - t_i)
+	\end{equation*}
 	
+	Ainsi, pour $t \in [p+1, N-p]$, on est assuré d'avoir au plus une rupture dans l'intervalle $[t-p, t+p]$. On peut donc appliquer l'algorithme CUSUM sur des fenêtres centrées en $t$ et de taille $2p+1$. Le principe de l'implémentation par fenêtres est alors d'appliquer l'algorithme CUSUM sur chacun des intervalles $[t-p,t+p]$ pour $t \in [p+1, N-p]$, et de sélectionner ensuite les n meilleures ruptures.
+	\\ \\
+	Pour réduire le problème, simplifions quelque peu l'algorithme CUSUM : on considère ici uniquement l'hypothèse d'une rupture à la date t. On a ainsi, pour $t \in [t-p,t+p]$, deux hypothèses :
+	\begin{equation*}
+			H_0^t : \forall i \in [t-p, t+p], X_i \sim p_{\tilde{\theta}}
+	\end{equation*}
+	\begin{equation*}
+			H_1^t : 
+			\left\{ \begin{array}{ll}
+				\forall i \in [t-p, t-1], X_i \sim p_{\theta_0} \\ \forall i \in [t, t+p], X_i \sim p_{\theta_1} \\
+			\end{array} \right.
+	\end{equation*}
 	
+	Il s'agit alors, comme c'est fait dans l'algorithme CUSUM pour une rupture, de comparer ces deux hypothèses, ceci pour tout $t$ :
 	
+	\begin{equation}
+		L_t = \ln \left[ \frac{\prod_{i = t-p}^{t-1} p_{\hat{\theta_0}}(x_i) \prod_{i = t}^{t+p} p_{\hat{\theta_1}}(x_i)}{\prod_{i = t-p}^{t+p} p_{\hat{\tilde{\theta}}}(x_i)} \right]
+	\end{equation}
 	
+	Cette formule se simplifie de la même manière que ce qui a été fait dans le chapitre 2, selon les différents types de changement : en moyenne, en écart-type, ou les deux en même temps. On cherche alors à sélectionner les $n$ instants où il est le plus vraisemblable de trouver une rupture, c'est-à-dire les $n$ plus grands maximas locaux de la suite $(L_t)_{t\in[p+1, N-p]}$.
 	
 	\chapter{Évaluation des performances}
 	
