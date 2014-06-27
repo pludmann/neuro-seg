@@ -95,9 +95,9 @@
 \end{itemize}
 
 \vspace{-.4cm}
-\[ \forall r \in [\![0\,;R-1]\!] , (X_n)_{n\in[\![t_{r-1}\,;t_r]\!]} \sim p_r\]
+\[ \forall r \in [\![0\,;R-1]\!] , (X_n)_{n\in[\![t_{r-1}\,;t_r-1]\!]} \sim p_r\]
 \hspace{.7cm}
-où $t_{-1}=1$ et $t_R=N$
+où $t_{-1}=1$ et $t_R=N+1$
 
 %\[	\forall n \in [\![1\,; t_0-1]\!], X_n \sim p_0 \]
 %\[	\forall n \in [\![t_0\,; N]\!], X_n \sim p_1 \]
@@ -119,7 +119,7 @@ où $t_{-1}=1$ et $t_R=N$
 
 \vspace{-.4cm}
 	\begin{equation}
-		L _k =\ln \left[ \frac{\sup_{\theta_0}\left\{ \prod_{i=1}^{k-1} p_{\theta_0}(y_i) \right\} \cdot \sup_{\theta_1} \left\{ \prod_{i = k}^{N}p_{\theta_1}(y_i) \right\}}{\sup_{\tilde\theta}\left\{\prod_{i=i}^{N}p_{\tilde{\theta}}(y_i)\right\}} \right]
+		L _k =\ln \left[ \frac{\sup_{\theta_0}\left\{ \prod_{i=1}^{k-1} p_{\theta_0}(x_i) \right\} \cdot \sup_{\theta_1} \left\{ \prod_{i = k}^{N}p_{\theta_1}(x_i) \right\}}{\sup_{\tilde\theta}\left\{\prod_{i=i}^{N}p_{\tilde{\theta}}(x_i)\right\}} \right]
 	\end{equation}
 \phantom{kcahkcah}
 
