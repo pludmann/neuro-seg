@@ -44,9 +44,12 @@ Son utilisation doit faire place à un apprentissage sur les segments de régime
 
 \subsection*{Remerciements}
 
+Nous tenions à remercier nos encadrants junior
+Emile Contal pour avoir trop souvent fait passer ses stagiaires devant son travail et sa thèse et
+Laurent Oudre pour son aiguillage de connaisseur,
+nos encadrants seniors Eva Wesfreid et Nicolas Vayatis qui sont à l'origine du sujet de stage.
 
-
-\addcontentsline{toc}{subsection}{Remerciements}
+%\addcontentsline{toc}{subsection}{Remerciements}
 
 
 
@@ -196,8 +199,8 @@ Son utilisation doit faire place à un apprentissage sur les segments de régime
 	\section{Principe de l'algorithme CUSUM}
 	
 	
-	L'algorithme CUSUM fut proposé en 1954 par E.S. Page \cite{CIS} ; une methode "en ligne".
-	Les signaux étant ici déjà réalisés, il nous faut ici adapter l'algorithme au cas "hors ligne" \cite{DAC}.
+	L'algorithme CUSUM fut proposé en 1954 par E.S. Page \cite{CIS} ; une methode "en ligne" utilisant un seuil de détection.
+	Les signaux étant ici déjà réalisés, on lui préfère son adaptation "hors ligne" \cite{DAC}.
 	\\
 	
 	Dans le formalisme précédent, on conçoit que les méthodes de détection de rupture se fondent sur des outils statistiques.
@@ -282,11 +285,11 @@ Son utilisation doit faire place à un apprentissage sur les segments de régime
 	
 	\ref{log_likelihood_ratio} se réécrit donc après calculs :
 	\begin{equation}
-		\forall t \in [\![1\,; N]\!], L_t = \frac{1}{2 \sigma ^2}\left[(t-1){\mu_0}^2 + (N - t + 1){\mu_1}^2 - N{\tilde\mu}^2 \right]
+		\forall t \in [\![1\,; N]\!], L_t = \frac{1}{2 \sigma ^2}\left[(t-1)\hat{\mu_0}^2 + (N - t + 1)\hat{\mu_1}^2 - N\hat{\tilde\mu}^2 \right]
 		\label{meanchange}
 	\end{equation}
 	
-	$\sigma$ étant donc fixé au préalable. Et $\tilde\mu$, $\mu_0$ et $\mu_1$ sont les estimateurs $\frac1n\sum_{i=1}^nx_i$ du signal respectivement de 1 à $N$, de 1 à $t-1$ et de $t$ à $N$.
+	$\sigma$ étant donc fixé au préalable. Et $\hat{\tilde\mu}$, $\hat\mu_0$ et $\hat\mu_1$ sont les estimateurs $\hat\mu=\frac1n\sum_{i=1}^nx_i$ du signal respectivement de 1 à $N$, de 1 à $t-1$ et de $t$ à $N$.
 	\\
 	
 	On se place dans le cas d'un changement en moyenne de $\mu_1 = 10$ à $\mu_2 = 20$, avec $t_0 = 201$.
@@ -328,10 +331,10 @@ Son utilisation doit faire place à un apprentissage sur les segments de régime
 	\ref{log_likelihood_ratio} se réécrit alors : 
 	
 	\begin{equation}
-		\forall t \in [\![1\,; N]\!], L_t = N\ln (\tilde{\sigma}) - (t-1)\ln ({\sigma_0}) - (N-t+1)\ln ({\sigma_1})
+		\forall t \in [\![1\,; N]\!], L_t = N\ln (\hat{\tilde\sigma}) - (t-1)\ln (\hat{\sigma_0}) - (N-t+1)\ln (\hat{\sigma_1})
 		\label{stdchange}
 	\end{equation}
-	$\mu$ étant préalablement fixé. Et $\tilde\sigma$, $\sigma_0$ et $\sigma_1$ sont les estimateurs $\sqrt{\frac1n\sum_{i=1}^n(x_i-\mu)^2}$ du signal respectivement de 1 à $N$, de 1 à $t-1$ et de $t$ à $N$.
+	$\mu$ étant préalablement fixé. Et $\hat{\tilde\sigma}$, $\hat\sigma_0$ et $\hat\sigma_1$ sont les estimateurs $\hat\sigma=\sqrt{\frac1n\sum_{i=1}^n(x_i-\mu)^2}$ du signal respectivement de 1 à $N$, de 1 à $t-1$ et de $t$ à $N$.
 	\\
 	
 		On se place dans le cas d'un changement en écart-type de $\sigma_0 = 1$ à $\sigma_1 = 3$, à l'instant $t_0 = 201$.
@@ -373,30 +376,59 @@ Son utilisation doit faire place à un apprentissage sur les segments de régime
 	
 	Dans ce dernier cas, on doit estimer à la fois la moyenne et l'écart-type des différentes portions du signal. On obtient un résultat quasiment identique à \ref{stdchange} :
 	\begin{equation}
-		\forall t \in [\![1\,;N]\!], L_t = N\ln (\tilde\sigma) - (t-1) \ln (\sigma_0) - (N - t + 1) \ln (\sigma_1)
+		\forall t \in [\![1\,;N]\!], L_t = N\ln (\hat{\tilde\sigma}) - (t-1) \ln (\hat\sigma_0) - (N - t + 1) \ln (\hat\sigma_1)
 		\label{bothchange}
 	\end{equation}
 	La seule différence intervient dans l'estimateur de l'écart-type :
 	au lieu d'utiliser une moyenne fixée sur l'ensemble du signal (ce qui peut se traduire légitimement par son estimateur sur la globalité du signal),
 	on utilise ici les estimateurs  de la moyenne sur les différentes portions du signal :
 	
-	$\tilde\mu$, $\mu_0$ et $\mu_1$ sont les estimateurs $\frac1n\sum_{i=1}^nx_i$ du signal respectivement de 1 à $N$, de 1 à $t-1$ et de $t$ à $N$.
-	Et $\tilde\sigma$, $\sigma_0$ et $\sigma_1$ sont les estimateurs $\sqrt{\frac1n\left[\sum_{i=1}^nx_i^2-(\sum_{i=1}^nx_i)^2\right]}$ du signal respectivement de 1 à $N$, de 1 à $t-1$ et de $t$ à $N$.
-	
-	\subsection{Détection d'un changement de moyenne}
-	
-	
+	$\hat{\tilde\mu}$, $\hat\mu_0$ et $\hat\mu_1$ sont les estimateurs $\hat\mu=\frac1n\sum_{i=1}^nx_i$ du signal respectivement de 1 à $N$, de 1 à $t-1$ et de $t$ à $N$.
+	Et $\hat{\tilde\sigma}$, $\hat{\sigma_0}$ et $\hat\sigma_1$ sont les estimateurs $\hat\sigma=\sqrt{\frac1n\left[\sum_{i=1}^nx_i^2-(\sum_{i=1}^nx_i)^2\right]}$ du signal respectivement de 1 à $N$, de 1 à $t-1$ et de $t$ à $N$.	
 
-	
 	
 	
 	\chapter{Cas de plusieurs ruptures : implémentation dichotomique}
 
 
 
-	Nous avons déjà présenté, dans le premier chapitre, le formalisme statistique associé au cas de plusieurs ruptures dans un signa (cf. équation \ref{multi_rupt}).
+	\section{Principe algorithmique}
+
+
+	Nous avons déjà présenté, dans le premier chapitre, le formalisme statistique associé au cas de plusieurs ruptures dans un signal en \ref{multi_rupt}.
+	L'implémentation dichotomique du CUSUM consiste alors à calculer un arbre de la façon suivante :
+	\\
+	\begin{itemize}
+	\item Maintenir un ensemble de ruptures choisis initialement vide (les noeuds intérieurs).
+	\item Maintenir un ensemble de ruptures éligibles qui contient initialement le résultat du CUSUM sur le signal entier (la frontière, les feuilles).
+	\item En extraire la rupture $t_0$ qui a le plus grand ratio de vraissemblance.
+	\item Calculer les deux ruptures -- qui sont alors éligibles -- en applicant le CUSUM entre la rupture choisie précédant chronologiquement $t_0$ et $t_0$ et entre $t_0$ et la rupture choisie suivant chronologiquement $t_0$.
+	\item Recommencer jusqu'à obtenir le nombre désiré de ruptures.\\
+	\end{itemize}
 	
 	
+	Procéder par dichotomie permet d'aller très rapidement dans le traitement : la complexité d'un CUSUM est linéaire en la taille du signal à traiter, on se retrouve dans le pire des cas avec une complexité en $\mathcal O(NR)$ avec $N$ la taille du signal et $R$ le nombre de rupture.
+	\\
+	
+	Mais remarquons que ce n'est pas nécessairement la première approche dichotomique qu'on pourrait envisager.
+	Une version plus naïve serait de calculer un arbre de dichotomie complet de taille le nombre de ruptures directement -- en retirant les moins bonnes si surplus.
+	C'est en tout cas plus évident que d'aller faire éclore la meilleure de feuille de l'arbre de travail à chaque tour de boucle.
+	
+	Sauf que l'arbre complet tombe dans un grave écueuil : plusieurs de ses sous-arbres sera vite confiné à calculer des ruptures là où elles sont minimes.
+	Par exemple si la racine correspond à la rupture de début de marche tout le sous-arbre de son fils gauche va pointer sur des ruptures dans le régime immobile.
+	\\
+	
+	On pourrait être tenter de remplacer la demande de taille par la demande de profondeur.
+	Et on choisirait les $R$ meilleurs ruptures parmi les $2^R$ de l'arbre complet.
+	Mais le souci vient alors de cette possibilité, réel, de choisir une rupture sans choisir ses ancestres \emph{i.e.}
+	choisir une rupture sans dire que la part de signal qui à permit de la choisir commence et finissent à de bons instants.
+	Car si on ne choisit pas ses ruptures parentes c'est bien qu'on considère ce début et cette fin comme n'étant pas significatives.
+	\\
+	
+	Cependant même la dichotomie par la frontière déborde du cadre théorique et principalement près la racine de l'arbre :
+	on place une rupture non pas entre deux régimes mais entre plusieurs régimes de part et d'autre de cette rupture.
+	Par exemple sur un signal physiologique de marche où le protocole expérimental donne lieu à un minimum de 5 régimes (Idle, Walk, Turn, Walk, Idle) et donc de 4 ruptures :
+	même si une rupture calculée est au bon endroit....
 	
 	\chapter{Cas de plusieurs ruptures : implémentation par fenêtres}
 	
