@@ -8,7 +8,7 @@
 \usepackage{amssymb}
 \usepackage{amsmath}
 \usepackage{subcaption} 
-
+\usepackage{a4wide}
 
 
 \begin{document}
@@ -44,7 +44,7 @@ Son utilisation doit faire place à un apprentissage sur les segments de régime
 
 \subsection*{Remerciements}
 
-Nous tenions à remercier nos encadrants junior
+Nous tenions à remercier nos encadrants juniors
 Emile Contal pour avoir trop souvent fait passer ses stagiaires devant son travail et sa thèse et
 Laurent Oudre pour son aiguillage de connaisseur,
 nos encadrants seniors Eva Wesfreid et Nicolas Vayatis qui sont à l'origine du sujet de stage.
@@ -619,9 +619,8 @@ nos encadrants seniors Eva Wesfreid et Nicolas Vayatis qui sont à l'origine du 
 	Les valeurs de l'espace entre ruptures sont tirés uniforment sur l'intervalle ouvert de $\mathbb R^{+*}$ qui s'étend de l'espace minimal au double de l'espace moyen moins l'espace minimal.
 	
 	On génère ainsi 100 signaux unidimensionnels pour un triplet d'argument donné afin de calculer dessus le RMSD -- la déviation quadratique moyenne --
-	 mais aussi le taux d'erreur moyen et son écart-type.
-	Le taux d'erreur étant le nombre de ruptures calculées à une distance supérieure de 10\% de l'espace minimal d'une rupture réelle sur le nombre totale de ruptures (réelles ou calculées, il y en a autant).
-	Remarquons qu'on ne pénalise pas les doublons de ruptures calculées sur une vraie rupture, ils ne sont pas problématique et peuvent être effacés \emph{a posteriori}.
+	 mais aussi le taux d'erreur moyen.
+	Le taux d'erreur étant le nombre de ruptures calculées à une distance supérieure de 10\% de l'espace minimal d'une rupture réelle sur le nombre totale de ruptures (réelles ou calculées, il y en a autant) sans compter les doublons.
 	
 	
 	\subsection{Selon le nombre de ruptures}
@@ -634,6 +633,30 @@ nos encadrants seniors Eva Wesfreid et Nicolas Vayatis qui sont à l'origine du 
 	
 	On peut s'attendre à ce que l'implémentation la plus incapacitée par l'augmentation du nombre de ruptures soit l'approche dichotomique car on s'éloigne alors de plus en plus du cadre théorique.
 	Tandis que l'approche par fenêtre ne fait pas la différence : il ne devrait pas y avoir de changement notable dans sa précision.
+	
+	\subsection{Selon l'espace moyen entre les ruptures}
+	
+	On fixe le nombre de ruptures à 6 et on reste avec un espace minimal de 100.
+	L'espace moyen va varier de 150 à 1100 par pas de 50.
+	
+	\begin{figure}[h]
+		\begin{subfigure}[t]{.49\textwidth}
+		  \includegraphics[width=\linewidth,height=.24\textheight]{rmsd_mean}
+			\caption{RMSD en fonction de l'espace moyen entre les ruptures}
+			\label{}
+		\end{subfigure}
+		\hfill
+		\begin{subfigure}[t]{.49\textwidth}
+			\includegraphics[width=\linewidth,height=.24\textheight]{erratemean_mean}
+			\caption{Taux d'erreur moyen en fonction de l'espace moyen entre les ruptures}
+			\label{}
+		\end{subfigure}
+	\caption{Scores calculés sur 100 signaux présentant 6 ruptures à une distance minimale de 100 points (1s) ; en bleu pour l'implémentation dichotomique, en vert pour l'implémentation par fenêtre}
+	\label{}
+	\end{figure}
+	
+	
+	\subsection{Selon l'espace minimal entre les ruptures}
 	
 	
 	\section{Sur des signaux physiologiques}
