@@ -620,6 +620,13 @@ nos encadrants seniors Eva Wesfreid et Nicolas Vayatis qui sont à l'origine du 
 	Les paramètres d'une distribution sont tout deux -- moyenne et écart-type -- tiré uniformément sur $]0\,;1[$.
 	On utilise donc le CUSUM avec la formule \ref{bothchange}.
 	
+	\begin{figure}[h]
+%		\vspace{2cm}
+		\includegraphics[width=\linewidth,height=3cm]{synthexpl}
+		\caption{Signal segmenté par la méthode par fenêtres ; en vert : rupture 1 ; en rouge : rupture 2 ; en noir : rupture 3}
+		\label{test_multi_rupt_seg}
+	\end{figure}
+	
 	On génère ainsi 100 signaux unidimensionnels pour un triplet d'argument donné afin de calculer dessus le RMSD -- la déviation quadratique moyenne --
 	 mais aussi le taux d'erreur moyen.
 	Le taux d'erreur étant le nombre de ruptures calculées à une distance supérieure de 10\% de l'espace minimal d'une rupture réelle sur le nombre totale de ruptures (réelles ou calculées, il y en a autant) et les ruptures redondantes.
@@ -638,7 +645,7 @@ nos encadrants seniors Eva Wesfreid et Nicolas Vayatis qui sont à l'origine du 
 	
 	Les résultats sont observables sur la figure \ref{score_rupt}.
 	
-	\begin{figure}[tp]
+	\begin{figure}[h]
 		\begin{subfigure}[t]{.49\textwidth}
 		  \includegraphics[width=\linewidth,height=.24\textheight]{rmsd_rupt}
 			\caption{RMSD en fonction du nombre de ruptures}
@@ -662,7 +669,7 @@ nos encadrants seniors Eva Wesfreid et Nicolas Vayatis qui sont à l'origine du 
 	L'espace moyen va varier de 150 à 1100 par pas de 50.
 		Les résultats sont observables sur la figure \ref{score_mean}.
 		
-	\begin{figure}[hp]
+	\begin{figure}[h]
 		\begin{subfigure}[t]{.49\textwidth}
 		  \includegraphics[width=\linewidth,height=.24\textheight]{rmsd_mean}
 			\caption{RMSD en fonction de l'espace moyen entre les ruptures}
@@ -683,10 +690,10 @@ nos encadrants seniors Eva Wesfreid et Nicolas Vayatis qui sont à l'origine du 
 	
 	Ici les paramètres sont fixés à 6 ruptures et un espace moyen de 500 points.
 	L'espace minimal va varier de 20 à 400 par pas de 20 ;
-	tandis que la fenêtre reste de taille 100.
+	et la fenêtre prend la même taille que l'espace minimal.
 	Les résultats sont observables sur la figure \ref{score_min}.
 	
-	\begin{figure}[hp]
+	\begin{figure}[h]
 		\begin{subfigure}[t]{.49\textwidth}
 		  \includegraphics[width=\linewidth,height=.24\textheight]{rmsd_min}
 			\caption{RMSD en fonction de l'espace minimal entre les ruptures}
@@ -698,7 +705,7 @@ nos encadrants seniors Eva Wesfreid et Nicolas Vayatis qui sont à l'origine du 
 			\caption{Taux d'erreur moyen en fonction de l'espace minimal entre les ruptures}
 			\label{}
 		\end{subfigure}
-	\caption{Scores calculés sur 100 signaux présentant 6 ruptures à une distance moyenne de 500 points (5s) ; en bleu pour l'implémentation dichotomique, en vert pour l'implémentation par fenêtre (sa taille reste fixe)}
+	\caption{Scores calculés sur 100 signaux présentant 6 ruptures à une distance moyenne de 500 points (5s) ; en bleu pour l'implémentation dichotomique, en vert pour l'implémentation par fenêtre}
 	\label{score_min}
 	\end{figure}
 	
