@@ -9,6 +9,10 @@
 \usepackage{amsmath}
 \usepackage{subcaption} 
 \usepackage{a4wide}
+<<<<<<< HEAD
+=======
+
+>>>>>>> e3aef265cfef61e2f18c425570b5cbce83b349a1
 
 
 \begin{document}
@@ -391,10 +395,22 @@ nos encadrants seniors Eva Wesfreid et Nicolas Vayatis qui sont à l'origine du 
 	
 	
 	\chapter{Cas de plusieurs ruptures : implémentation dichotomique}
+	Nous allons à présent nous intéresser au problème que l'on cherche à résoudre, à savoir celui d'un signal avec plusieurs ruptures. Voyons ici une première approche, qui semble particulièrement intuitive, à savoir l'approche dichotomique.
 
+	\section{Principe théorique}
+	Nous allons ici reprendre le principe de l'algorithme CUSUM tel qu'il est décrit dans le chapitre 2, et l'adapter au cas de plusieurs ruptures.
+	\\ \\
+	Le principe de la dichotomie est simple : à chaque étape de la dichotomie, on compare l'hypothèse qu'il y a une rupture dans le signal à l'hypothèse qu'il n'y en a pas. Il nous faudra ensuite comparer ces ruptures pour en choisir une. Voyons cela plus en détail.
+	\\ \\
+	À la première étape de la dichotomie, on applique l'algorithme CUSUM classique à notre signal tout entier. Notons qu'on ne cherche pas à valider l'hypothèse qu'il y a une rupture dans le signal, mais qu'on cherche bien à trouver l'instant où cette hypothèse est la plus vraisemblable : on conçoit donc que même si l'hypothèse est fausse (puisqu'il y a plusieurs ruptures dans le signal), son maximum de vraisemblance constituera un bon estimateur pour l'une des ruptures du signal. On a ainsi détecté une rupture, $\hat{t_0}$.
+	\\ \\
+	On peut alors séparer le signal en deux sous-signaux : $(X_t)_{t \in [1, \hat{t_0}-1]}$ et $(X_t)_{t \in [\hat{t_0}, N]}$. Sur chacun de ces sous-signaux, on peut alors à nouveau effectuer l'algorithme CUSUM, et détecter ainsi deux nouveaux maximas de vraisemblance, que l'on notera $t_{1,1}$ et $t_{1,2}$, associés aux \textit{log-likelihood ratios} $L_{t_{1,1}}^1$ et $L_{t_{1,2}}^2$. On peut alors comparer ces deux \textit{log-likelihood ratios} et en déduire la rupture la plus vraisemblable : si $L_{t_{1,1}}^1 > L_{t_{1,2}}^2$, on considère $\hat{t_1} = t_{1,1}$ ; sinon, on considère $\hat{t_1} = t_{1,2}$.
+	\\ \\
+	Considérons qu'on est dans le premier cas ici (le second se traite de manière analogue). On peut alors à nouveau découper en deux sous-signaux : $(X_t)_{t \in [1, \hat{t_1}-1]}$ et $(X_t)_{t \in [\hat{t_1}, \hat{t_0}-1]}$. On peut à nouveau déterminer les maximas de vraisemblance de chaque côté, et obtenir ainsi deux instants $t_{2,1}$ et $t_{2,2}$, associés aux \textit{log-likelihood ratios} $L_{t_{2,1}}^2$ et $L_{t_{2,2}}^2$. On compare alors entre eux les \textit{log-likelihood ratios} $L_{t_{2,1}}^2$, $L_{t_{2,2}}^2$ et $L_{t_{1,2}}^1$. Le plus élevé de ces trois, disons $L_{t_{1,2}}^1$ par exemple, permet de sélectionner la rupture suivante : ce sera ici $\hat{t_2} = t_{1,2}$.
+	\\ \\
+	On redécoupe alors le signal à partir de la dernière rupture observée : ici, on découpe $(X_t)_{t \in [\hat{t_0}, N]}$ en $(X_t)_{t \in [\hat{t_0}, \hat{t_2}-1]}$ et $(X_t)_{t \in [\hat{t_2}, N]}$, et on réapplique l'algorithme CUSUM de chaque côté, en comparant à chaque fois tous les maximas qui n'ont pas été sélectionnés. On répète cette opération jusqu'à avoir le nombre $n$ de ruptures voulu.
 
-
-	\section{Principe algorithmique}
+	\section{Implémentation algorithmique}
 
 
 	Nous avons déjà présenté, dans le premier chapitre, le formalisme statistique associé au cas de plusieurs ruptures dans un signal en \ref{multi_rupt}.
@@ -447,13 +463,13 @@ nos encadrants seniors Eva Wesfreid et Nicolas Vayatis qui sont à l'origine du 
 
 	\begin{figure}[hp]
 		\begin{subfigure}[t]{.49\textwidth}
-			\includegraphics[width=\linewidth,height=.24\textheight]{test_multi_mid}
+			\includegraphics[width=\linewidth,height=.24\textheight]{test_multi_mid.png}
 			\caption{De 1 à 200 : $\mathcal{N}(0,1)$ ; de 201 à 400 : $\mathcal{N}(0,3)$ ; de 401 à 600 : $\mathcal{N}(10,3)$ ; de 601 à 800 : $\mathcal{N}(10,1)$}
 			\label{test_multi_dikt}
 		\end{subfigure}
 		\hfill
 		\begin{subfigure}[t]{.49\textwidth}
-		  \includegraphics[width=\linewidth,height=.24\textheight]{mle1}
+		  \includegraphics[width=\linewidth,height=.24\textheight]{mle1.png}
 			\caption{Résultat du CUSUM sur tout le signal}
 			\label{mle1}
 		\end{subfigure}	
@@ -463,13 +479,13 @@ nos encadrants seniors Eva Wesfreid et Nicolas Vayatis qui sont à l'origine du 
 	
 	\begin{figure}[hp]
 		\begin{subfigure}[t]{.49\textwidth}
-		  \includegraphics[width=\linewidth,height=.24\textheight]{mle11}
+		  \includegraphics[width=\linewidth,height=.24\textheight]{mle11.png}
 			\caption{Résultat du CUSUM de 1 à 400}
 			\label{mle11}
 		\end{subfigure}
 		\hfill
 		\begin{subfigure}[t]{.49\textwidth}
-			\includegraphics[width=\linewidth,height=.24\textheight]{mle12}
+			\includegraphics[width=\linewidth,height=.24\textheight]{mle12.png}
 			\caption{Résultat du CUSUM de 401 à 800}
 			\label{mle12}
 		\end{subfigure}
@@ -479,22 +495,22 @@ nos encadrants seniors Eva Wesfreid et Nicolas Vayatis qui sont à l'origine du 
 	
 	\begin{figure}[hp]
 		\begin{subfigure}[t]{.49\textwidth}
-		  \includegraphics[width=\linewidth,height=.24\textheight]{mle121}
+		  \includegraphics[width=\linewidth,height=.24\textheight]{mle121.png}
 			\caption{Résultat du CUSUM de 401 à 600}
 			\label{mle121}
 		\end{subfigure}
 		\hfill
 		\begin{subfigure}[t]{.49\textwidth}
-			\includegraphics[width=\linewidth,height=.24\textheight]{mle122}
+			\includegraphics[width=\linewidth,height=.24\textheight]{mle122.png}
 			\caption{Résultat du CUSUM de 601 à 800}
 			\label{mle122}
-		\end{subfigure}
+		\end{subfigure} 
 	\caption{Les nouveaux résultats de CUSUM après le deuxième choix}
 	\label{testdikt3}
 	\end{figure}
 	
 	\begin{figure}[hp]
-		\includegraphics[width=\linewidth,height=.24\textheight]{tada_dikt}
+		\includegraphics[width=\linewidth,height=.24\textheight]{tada_dikt.png}
 		\caption{Signal segmenté par la méthode dichotomique ; en vert : rupture 1 ; en rouge : rupture 2 ; en noir : rupture 3}
 		\label{tada_dikt}
 	\end{figure}
