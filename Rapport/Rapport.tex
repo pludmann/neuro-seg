@@ -391,13 +391,25 @@ nos encadrants seniors Eva Wesfreid et Nicolas Vayatis qui sont à l'origine du 
 	
 	
 	\chapter{Cas de plusieurs ruptures : implémentation dichotomique}
+	 +	Nous allons à présent nous intéresser au problème que l'on cherche à résoudre, à savoir celui d'un signal avec plusieurs ruptures. Voyons ici une première approche, qui semble particulièrement intuitive, à savoir l'approche dichotomique.
+	  
+	 +	\section{Principe théorique}
+	 +	Nous allons ici reprendre le principe de l'algorithme CUSUM tel qu'il est décrit dans le chapitre 2, et l'adapter au cas d'un nombre $R$ de ruptures.
+	 +	\\ \\
+	 +	Le principe de la dichotomie est simple : à chaque étape de la dichotomie, on compare l'hypothèse qu'il y a une rupture dans le signal à l'hypothèse qu'il n'y en a pas. Il nous faudra ensuite comparer ces ruptures pour en choisir une. Voyons cela plus en détail.
+	 +	\\ \\
+	 +	À la première étape de la dichotomie, on applique l'algorithme CUSUM classique à notre signal tout entier. Notons qu'on ne cherche pas à valider l'hypothèse qu'il y a une rupture dans le signal, mais qu'on cherche bien à trouver l'instant où cette hypothèse est la plus vraisemblable : on conçoit donc que même si l'hypothèse est fausse (puisqu'il y a plusieurs ruptures dans le signal), son maximum de vraisemblance constituera un bon estimateur pour l'une des ruptures du signal. On a ainsi détecté une rupture, $\hat{t_0}$.
+	 +	\\ \\
+	 +	On peut alors séparer le signal en deux sous-signaux : $(X_t)_{t \in [1, \hat{t_0}-1]}$ et $(X_t)_{t \in [\hat{t_0}, N]}$. Sur chacun de ces sous-signaux, on peut alors à nouveau effectuer l'algorithme CUSUM, et détecter ainsi deux nouveaux maximas de vraisemblance, que l'on notera $t_{1,1}$ et $t_{1,2}$, associés aux \textit{log-likelihood ratios} $L_{t_{1,1}}^1$ et $L_{t_{1,2}}^2$. On peut alors comparer ces deux \textit{log-likelihood ratios} et en déduire la rupture la plus vraisemblable : si $L_{t_{1,1}}^1 > L_{t_{1,2}}^2$, on considère $\hat{t_1} = t_{1,1}$ ; sinon, on considère $\hat{t_1} = t_{1,2}$.
+	 +	\\ \\
+	 +	Considérons qu'on est dans le premier cas ici (le second se traite de manière analogue). On peut alors à nouveau découper en deux sous-signaux : $(X_t)_{t \in [1, \hat{t_1}-1]}$ et $(X_t)_{t \in [\hat{t_1}, \hat{t_0}-1]}$. On peut à nouveau déterminer les maximas de vraisemblance de chaque côté, et obtenir ainsi deux instants $t_{2,1}$ et $t_{2,2}$, associés aux \textit{log-likelihood ratios} $L_{t_{2,1}}^2$ et $L_{t_{2,2}}^2$. On compare alors entre eux les \textit{log-likelihood ratios} $L_{t_{2,1}}^2$, $L_{t_{2,2}}^2$ et $L_{t_{1,2}}^1$. Le plus élevé de ces trois, disons $L_{t_{1,2}}^1$ par exemple, permet de sélectionner la rupture suivante : ce sera ici $\hat{t_2} = t_{1,2}$.
+	 +	\\ \\
+	 +	On redécoupe alors le signal à partir de la dernière rupture observée : ici, on découpe $(X_t)_{t \in [\hat{t_0}, N]}$ en $(X_t)_{t \in [\hat{t_0}, \hat{t_2}-1]}$ et $(X_t)_{t \in [\hat{t_2}, N]}$, et on réapplique l'algorithme CUSUM de chaque côté, en comparant à chaque fois tous les maximas qui n'ont pas été sélectionnés. On répète cette opération jusqu'à avoir le nombre $R$ de ruptures voulu.
 
 
 
-	\section{Principe algorithmique}
+	\section{Implémentation algorithmique}
 
-
-	Nous avons déjà présenté, dans le premier chapitre, le formalisme statistique associé au cas de plusieurs ruptures dans un signal en \ref{multi_rupt}.
 	L'implémentation dichotomique du CUSUM consiste alors à calculer un arbre de la façon suivante :
 	\\
 	\begin{itemize}
@@ -409,7 +421,7 @@ nos encadrants seniors Eva Wesfreid et Nicolas Vayatis qui sont à l'origine du 
 	\end{itemize}
 	
 	
-	Procéder par dichotomie permet d'aller très rapidement dans le traitement : la complexité d'un CUSUM est linéaire en la taille du signal à traiter, on se retrouve dans le pire des cas avec une complexité en $\mathcal O(NR)$ avec $N$ la taille du signal et $R$ le nombre de rupture.
+	Procéder par dichotomie permet d'aller très rapidement dans le traitement : la complexité d'un CUSUM est linéaire en la taille du signal à traiter, on se retrouve dans le pire des cas avec une complexité en $\mathcal O(NR)$ avec $N$ la taille du signal et $R$ le nombre de ruptures.
 	\\
 	
 	Mais remarquons que ce n'est pas nécessairement la première approche dichotomique qu'on pourrait envisager.
@@ -420,19 +432,12 @@ nos encadrants seniors Eva Wesfreid et Nicolas Vayatis qui sont à l'origine du 
 	Par exemple si la racine correspond à la rupture de début de marche tout le sous-arbre de son fils gauche va pointer sur des ruptures dans le régime immobile.
 	\\
 	
-	On pourrait être tenter de remplacer la demande de taille par la demande de profondeur.
+	On pourrait être tenté de remplacer la demande de taille par la demande de profondeur.
 	Et on choisirait les $R$ meilleurs ruptures parmi les $2^R$ de l'arbre complet.
-	Mais le souci vient alors de cette possibilité, réel, de choisir une rupture sans choisir ses ancestres \emph{i.e.}
-	choisir une rupture sans dire que la part de signal qui à permit de la choisir commence et finissent à de bons instants.
+	Mais le souci vient alors de cette possibilité, réelle, de choisir une rupture sans choisir ses parents, \emph{i.e.}
+	choisir une rupture sans dire que la part de signal qui a permis de la choisir commence et finisse à de bons instants.
 	Car si on ne choisit pas ses ruptures parentes c'est bien qu'on considère ce début et cette fin comme n'étant pas significatives.
 	\\
-	
-	Cependant même la dichotomie par la frontière déborde du cadre théorique et principalement près la racine de l'arbre :
-	on place une rupture non pas entre deux régimes mais entre plusieurs régimes de part et d'autre de cette rupture.
-	Par exemple sur un signal physiologique de marche où le protocole expérimental donne lieu à un minimum de 5 régimes (Idle, Walk, Turn, Walk, Idle) et donc de 4 ruptures :
-	même si la première rupture calculée est au bon endroit -- sur un changement de régime --
-	elle va en séparer 1 de 4, 2 de 3, 3 de 2 ou 4 de 1.
-	On est bien loin du cadre théorique.
 	
 		Observons en détails la manière de procéder sur un exemple (signal \ref{test_multi_mid})
 	Puisque le changement est autant en écart-type qu'en moyenne, on utilise la formule \ref{bothchange} pour le CUSUM.
@@ -506,8 +511,8 @@ nos encadrants seniors Eva Wesfreid et Nicolas Vayatis qui sont à l'origine du 
 	
 	
 	Il a été vu dans la partie précédente que l'implémentation dichotomique du CUSUM débordait du cadre théorique :
-	en effet, on fait à itération l'hypothèse d'une unique rupture dans le signal, alors que l'on désire en détecter plusieurs.
-	De plus, on cherche dans cette approche à comparer entre elles des ruptures sur des signaux qui n'ont a priori aucun rapport les uns les autres.
+	en effet, on quantifie à chaque itération la vraisemblance de l'hypothèse d'une unique rupture dans le signal, alors que l'on désire en détecter plusieurs.
+	De plus, on cherche, dans cette approche, à comparer entre elles des ruptures sur des signaux qui n'ont a priori aucun rapport les uns les autres (les tailles des signaux que l'on compare ne sont pas toujours les mêmes, par exemple).
 	Pour pallier ce défaut, nous proposons ici une approche par fenêtres.
 	
 	
@@ -566,7 +571,7 @@ nos encadrants seniors Eva Wesfreid et Nicolas Vayatis qui sont à l'origine du 
 		\item On recommence alors sur la sous-suite ainsi obtenue, jusqu'à avoir $n$ ruptures
 	\end{itemize}
 	
-	Observons en détails la manière de procéder sur un exemple (signal \ref{test_multi_rupt})
+	Un tel algorithme a une complexité en $\mathcal{O}(NR)$. Observons en détails la manière de procéder sur un exemple (signal \ref{test_multi_rupt})
 \\
 
 	On peut ici assurer un intervalle entre deux ruptures de 200 points (dans la pratique, il faut estimer cet intervalle).
@@ -715,8 +720,11 @@ nos encadrants seniors Eva Wesfreid et Nicolas Vayatis qui sont à l'origine du 
 	
 	
 	\chapter{Conclusion}
-	
-	
+	Le problème posé initialement est assez intuitif : à partir de signaux physiologiques, on doit être capable de retrouver algorithmiquement les différentes phases de l'expérience (un aller-retour en marchant). On a vu que le formalisme mathématique qui y était associé était essentiellement statistique, et que les outils utilisés pour résoudre le problème l'étaient également. En particulier, on remarquera que le problème n'est pas résolu de manière exacte, mais approchée. On s'étonnera aussi de la difficulté pour résoudre un problème a priori très intuitif, car très visuel : on peut clairement segmenter à vue de nez les différents signaux observés dans ce rapport !
+	\\ \\
+	La partie précédente montre qu'en pratique, l'approche par fenêtres semble donner de meilleurs résultats que l'approche par dichotomie. En effet, si l'on semble avoir un taux d'erreurs plus élevé dans la plupart des cas avec l'approche par fenêtres qu'avec l'approche dichotomique, il importe de voir que le seuil de $10\%$ fixé ici est avant tout arbitraire, et correspond à une qualité que l'on peut espérer sur les signaux physiologiques. Il est plus pertinent d'observer la déviation quadratique moyenne (ou RMSD) pour comparer les deux algorithmes.
+	\\ \\
+	En effet, le RMSD est une mesure de l'écart quadratique moyen entre une valeur réelle et son estimateur : il mesure, ici, l'écart quadratique moyen entre la rupture réelle et celle détectée par l'algorithme. On constate alors que les ruptures détectées par l'implémentation par fenêtres sont en moyenne plus proches des ruptures réelles que celles détectées par l'implémentation dichotomique. Ceci peut provenir du fait que l'implémentation dichotomique donne nécessairement des scores moins distingués, car on y quantifie la vraisemblance d'une hypothèse qui est nécessairement fausse (étant donné qu'on cherche de toute façon à détecter plusieurs ruptures).
 	
 \bibliographystyle{alpha}
 \bibliography{Rapport.bib}
