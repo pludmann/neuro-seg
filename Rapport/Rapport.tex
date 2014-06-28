@@ -128,9 +128,9 @@ nos encadrants seniors Eva Wesfreid et Nicolas Vayatis qui sont à l'origine du 
 	
 	\vspace{1pc}
 	
-	Partant de ces constatations, on peut donc constater que les signaux acquis par les centrales inertielles peuvent être segmentés,
+	Partant de ceci, on peut donc constater que les signaux acquis par les centrales inertielles peuvent être segmentés,
 	qu'on peut isoler les différentes phases de l'expérience.
-	Sur un signal, cela peut être fait de manière manuelle ;
+	Sur un seul signal, cela peut être fait de manière manuelle ;
 	néanmoins,
 	pour un neurologue enregistrant de manière régulière ce type d'expérience,
 	il est concevable de désirer des algorithmes robustes permettant de traiter de manière automatique le problème de la détection des points de changement,
@@ -244,7 +244,7 @@ nos encadrants seniors Eva Wesfreid et Nicolas Vayatis qui sont à l'origine du 
 	\end{equation}
 	
 	Finalement, l'instant où il est le plus probable de trouver une rupture est celui qui maximise $L_t$.
-	Ainsi, l'estimation de maximum de vraissemblance (\emph{maximum likelihood estimation}) par CUSUM du point de rupture d'un signal est :
+	Ainsi, l'estimateur du maximum de vraisemblance (\emph{maximum likelihood estimator}) par CUSUM du point de rupture d'un signal est :
 	
 	\begin{equation}
 		\hat{t_0}=\arg\max_{1\le t\le N}L_t
@@ -268,8 +268,10 @@ nos encadrants seniors Eva Wesfreid et Nicolas Vayatis qui sont à l'origine du 
 	Les estimateurs aux maximas de vraisemblance de la loi normale sont alors connus \cite{MLE}.
 	Ceci nous permet alors de simplifier l'expression de $L_t$
 	car les bornes supérieures sont atteintes par ces estimateurs.
-	Notons que l'hypothèse du gaussien ramène le problème du changement de loi à trois cas :
-	changement de moyenne, changement d'écart-type, et changement de moyenne et d'écart-type.
+	Notons que l'hypothèse du gaussien ramène le problème du changement de loi à trois cas : changement de moyenne, changement d'écart-type, et changement de moyenne et d'écart-type.
+	\\ \\
+	Dans le cas d'un signal multi-varié, on peut généraliser aisément tout ce qui a été dit précédemment en faisant l'hypothèse d'indépendance des différentes composantes du signal entre elles. On calcule alors les \textit{log-likelihood ratios} des différentes composantes du signal indépendamment avant de les additionner, et de chercher le maximum de cette résultante. Tout du long, en vertu de cette remarque, on ne théorisera que le cas univarié.
+	\\ \\
 	
 		Bien que nous n'allons pas immédiatement traîter les signaux physiologiques vus précédemment --
 	ceux-ci comportent plusieurs ruptures, l'algorithme CUSUM ne permettant d'en détecter qu'une seule -- il est de bon ton de joindre des exemples imagés à ce flot de formules.
@@ -483,7 +485,36 @@ nos encadrants seniors Eva Wesfreid et Nicolas Vayatis qui sont à l'origine du 
 	On cherche alors à sélectionner les $R$ instants où il est le plus vraisemblable de trouver une rupture,
 	c'est-à-dire les $R$ plus grands maximas locaux de la suite $(L_t)_{t\in[p+1, N-p]}$.
 	
+	\section{Implémentation algorithmique}
+	Le principe théorique de la détection de ruptures par fenêtres éclaire sur la manière d'implémenter l'algorithme. Pour cela, il nous faut :
+	\begin{itemize}
+		\item Calculer les scores $L_t$ selon la formule 4.3 après simplification (selon qu'on cherche un changement en moyenne, en écart-type, ou les deux)
+		\item Déterminer $\hat{t_0} = \arg \max_{t \in [p+1, N-p]} L_t$
+		\item Considérant $\hat{t_0}$ comme une rupture, on sait qu'il n'y a pas d'autre rupture dans la fenêtre $[\hat{t_0}-p, \hat{t_0}+p]$ par hypothèse ; on peut donc retirer de la suite $(L_t)$ les valeurs $(L_t)_{t \in [\hat{t_0}-p, \hat{t_0}+p]}$
+		\item On recommence alors sur la sous-suite ainsi obtenue, jusqu'à avoir $n$ ruptures
+	\end{itemize}
 	
+	Observons en détails la manière de procéder sur un exemple (signal \ref{test_multi_rupt})
+	\begin{figure}[h]
+		\includegraphics[scale=0.4]{test_multi_rupt.png}
+		\caption{De 1 à 200 : $\mathcal{N}(0,1)$ ; de 201 à 400 : $\mathcal{N}(0,3)$ ; de 401 à 600 : $\mathcal{N}(10,3)$ ; de 601 à 800 : $\mathcal{N}(10,1)$}
+		\label{test_multi_rupt}
+	\end{figure}
+	On peut ici assurer un intervalle entre deux ruptures de 200 points (dans la pratique, il faut estimer cet intervalle). Pour pouvoir observer ce qui se passe avant la première rupture et après la dernière, on prendra ici des fenêtres de 150 points de chaque côté. On travaille de plus avec des ruptures en moyenne et en écart-type. On obtient alors la suite $(L_t)$ montrée sur la figure \ref{multi_rupt_llr_ex}.
+	
+	\begin{figure}[h]
+		\includegraphics[scale=0.4]{multi_rupt_llr_ex.png}
+		\caption{Suite $(L_t)_{t\in[151,650]}$}
+		\label{multi_rupt_llr_ex}
+	\end{figure}
+	
+	On demande alors à trouver 3 ruptures à partir de cette figure. On commence par détecter le maximum à $\hat{t_0} = 403$, où $L_{\hat{t_0}} = 184,2725$. On exclut alors les valeurs de $L_t$ pour $t \in [253, 553]$. On cherche alors le nouveau maximum : on trouve $\hat{t_1} = 198$ pour $L_{\hat{t_1}} = 105,1670$. On recommence alors la procédure d'exclusion des points dans le voisinage de cette rupture, et on trouve le dernier maximum : $\hat{t_2} = 601$ pour $L_{\hat{t_2}} = 77,0389$. La segmentation obtenue est montrée sur la figure \ref{test_multi_rupt_seg}.
+	
+	\begin{figure}[h]
+		\includegraphics[scale=0.4]{test_multi_rupt_seg.png}
+		\caption{Signal segmenté par la méthode par fenêtres ; en vert : rupture 1 ; en rouge : rupture 2 ; en noir : rupture 3}
+		\label{test_multi_rupt_seg}
+	\end{figure}
 	
 	\chapter{Évaluation des performances}
 	
