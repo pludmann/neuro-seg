@@ -434,8 +434,73 @@ nos encadrants seniors Eva Wesfreid et Nicolas Vayatis qui sont à l'origine du 
 	elle va en séparer 1 de 4, 2 de 3, 3 de 2 ou 4 de 1.
 	On est bien loin du cadre théorique.
 	
+		Observons en détails la manière de procéder sur un exemple (signal \ref{test_multi_mid})
+	Puisque le changement est autant en écart-type qu'en moyenne, on utilise la formule \ref{bothchange} pour le CUSUM.
 	
+	Et on l'applique dès le début à tout le signal comme en \ref{mle1}.
+	Ceci nous donne $\hat t_0=401$ avec $L_{401}=756,7$.
+	On a notre première rupture, on utilise donc le CUSUM de part et d'autre de $\hat t_0$, donnant \ref{testdikt2}.
+	C'est $\hat t_1=601$ qui a l'avantage avec $L_{601}=88,98$ sur la rupture proposée par le CUSUM entre 1 et 400 -- $L_{202}=87,72$.
+	Le CUSUM va alors chercher des ruptures entre 401 et 600 et entre 601 et 800 mais cela donne lieu à de très faibles vraisemblances (cf \ref{testdikt3}).
+	Ainsi la troisième et dernière rupture choisie est $\hat t_2=202$ qui avait était proposé au tour précédent.
 	
+
+	\begin{figure}[hp]
+		\begin{subfigure}[t]{.49\textwidth}
+			\includegraphics[width=\linewidth,height=.24\textheight]{test_multi_mid}
+			\caption{De 1 à 200 : $\mathcal{N}(0,1)$ ; de 201 à 400 : $\mathcal{N}(0,3)$ ; de 401 à 600 : $\mathcal{N}(10,3)$ ; de 601 à 800 : $\mathcal{N}(10,1)$}
+			\label{test_multi_dikt}
+		\end{subfigure}
+		\hfill
+		\begin{subfigure}[t]{.49\textwidth}
+		  \includegraphics[width=\linewidth,height=.24\textheight]{mle1}
+			\caption{Résultat du CUSUM sur tout le signal}
+			\label{mle1}
+		\end{subfigure}	
+	\caption{Au début de l'algorithme dichotomique : le signal et un premier CUSUM}
+	\label{testdikt1}
+	\end{figure}
+	
+	\begin{figure}[hp]
+		\begin{subfigure}[t]{.49\textwidth}
+		  \includegraphics[width=\linewidth,height=.24\textheight]{mle11}
+			\caption{Résultat du CUSUM de 1 à 400}
+			\label{mle11}
+		\end{subfigure}
+		\hfill
+		\begin{subfigure}[t]{.49\textwidth}
+			\includegraphics[width=\linewidth,height=.24\textheight]{mle12}
+			\caption{Résultat du CUSUM de 401 à 800}
+			\label{mle12}
+		\end{subfigure}
+	\caption{Les nouveaux résultats de CUSUM après le premier choix}
+	\label{testdikt2}
+	\end{figure}
+	
+	\begin{figure}[hp]
+		\begin{subfigure}[t]{.49\textwidth}
+		  \includegraphics[width=\linewidth,height=.24\textheight]{mle121}
+			\caption{Résultat du CUSUM de 401 à 600}
+			\label{mle121}
+		\end{subfigure}
+		\hfill
+		\begin{subfigure}[t]{.49\textwidth}
+			\includegraphics[width=\linewidth,height=.24\textheight]{mle122}
+			\caption{Résultat du CUSUM de 601 à 800}
+			\label{mle122}
+		\end{subfigure}
+	\caption{Les nouveaux résultats de CUSUM après le deuxième choix}
+	\label{testdikt3}
+	\end{figure}
+	
+	\begin{figure}[hp]
+		\includegraphics[width=\linewidth,height=.24\textheight]{tada_dikt}
+		\caption{Signal segmenté par la méthode dichotomique ; en vert : rupture 1 ; en rouge : rupture 2 ; en noir : rupture 3}
+		\label{tada_dikt}
+	\end{figure}
+		
+		
+		
 	\chapter{Cas de plusieurs ruptures : implémentation par fenêtres}	
 	
 	
@@ -460,10 +525,14 @@ nos encadrants seniors Eva Wesfreid et Nicolas Vayatis qui sont à l'origine du 
 		p = \min_{-1 \leq r \leq R-1} (t_{r+1} - t_r)
 	\end{equation*}
 	
-	Ainsi, pour $t \in [p+1, N-p]$, on est assuré d'avoir au plus une rupture dans l'intervalle $[t-p, t+p]$. On peut donc appliquer l'algorithme CUSUM sur des fenêtres centrées en $t$ et de taille $2p+1$. Le principe de l'implémentation par fenêtres est alors d'appliquer l'algorithme CUSUM sur chacun des intervalles $[t-p,t+p]$ pour $t \in [p+1, N-p]$, et de sélectionner ensuite les $R$ meilleures ruptures.
+	Ainsi, pour $t \in [p+1, N-p]$, on est assuré d'avoir au plus une rupture dans l'intervalle $[t-p, t+p]$.
+	On peut donc appliquer l'algorithme CUSUM sur des fenêtres centrées en $t$ et de taille $2p+1$.
+	Le principe de l'implémentation par fenêtres est alors d'appliquer l'algorithme CUSUM sur chacun des intervalles $[t-p,t+p]$ pour $t \in [p+1, N-p]$, et de sélectionner ensuite les $R$ meilleures ruptures.
 	\\
 	
-	Pour réduire le problème, simplifions quelque peu l'algorithme CUSUM : on considère ici uniquement l'hypothèse d'une rupture à la date t. On a ainsi, pour $t \in [t-p,t+p]$, deux hypothèses :
+	Pour réduire le problème, simplifions quelque peu l'algorithme CUSUM :
+	on considère ici uniquement l'hypothèse d'une rupture à la date t.
+	On a ainsi, pour $t \in [t-p,t+p]$, deux hypothèses :
 	\begin{equation*}
 			H_0^t : \forall i \in [t-p, t+p], X_i \sim p_{\tilde{\theta}}
 	\end{equation*}
@@ -485,7 +554,10 @@ nos encadrants seniors Eva Wesfreid et Nicolas Vayatis qui sont à l'origine du 
 	On cherche alors à sélectionner les $R$ instants où il est le plus vraisemblable de trouver une rupture,
 	c'est-à-dire les $R$ plus grands maximas locaux de la suite $(L_t)_{t\in[p+1, N-p]}$.
 	
+	
 	\section{Implémentation algorithmique}
+	
+	
 	Le principe théorique de la détection de ruptures par fenêtres éclaire sur la manière d'implémenter l'algorithme. Pour cela, il nous faut :
 	\begin{itemize}
 		\item Calculer les scores $L_t$ selon la formule 4.3 après simplification (selon qu'on cherche un changement en moyenne, en écart-type, ou les deux)
@@ -495,23 +567,37 @@ nos encadrants seniors Eva Wesfreid et Nicolas Vayatis qui sont à l'origine du 
 	\end{itemize}
 	
 	Observons en détails la manière de procéder sur un exemple (signal \ref{test_multi_rupt})
-	\begin{figure}[h]
-		\includegraphics[scale=0.4]{test_multi_rupt.png}
+\\
+
+	On peut ici assurer un intervalle entre deux ruptures de 200 points (dans la pratique, il faut estimer cet intervalle).
+	Pour pouvoir observer ce qui se passe avant la première rupture et après la dernière, on prendra ici des fenêtres de 150 points de chaque côté.
+	On travaille de plus avec des ruptures en moyenne et en écart-type.
+	On obtient alors la suite $(L_t)$ montrée sur la figure \ref{multi_rupt_llr_ex}.
+	\\
+	
+	On demande alors à trouver 3 ruptures à partir de cette figure.
+	On commence par détecter le maximum à $\hat{t_0} = 403$, où $L_{\hat{t_0}} = 184,2725$. On exclut alors les valeurs de $L_t$ pour $t \in [253, 553]$.
+	On cherche alors le nouveau maximum : on trouve $\hat{t_1} = 198$ pour $L_{\hat{t_1}} = 105,1670$.
+	On recommence alors la procédure d'exclusion des points dans le voisinage de cette rupture, et on trouve le dernier maximum : $\hat{t_2} = 601$ pour $L_{\hat{t_2}} = 77,0389$.
+	La segmentation obtenue est montrée sur la figure \ref{test_multi_rupt_seg}.
+	
+		\begin{figure}[hp]
+%		\vspace{-4cm}
+		\includegraphics[height=0.25\textheight,width=\textwidth]{test_multi_rupt.png}
 		\caption{De 1 à 200 : $\mathcal{N}(0,1)$ ; de 201 à 400 : $\mathcal{N}(0,3)$ ; de 401 à 600 : $\mathcal{N}(10,3)$ ; de 601 à 800 : $\mathcal{N}(10,1)$}
 		\label{test_multi_rupt}
 	\end{figure}
-	On peut ici assurer un intervalle entre deux ruptures de 200 points (dans la pratique, il faut estimer cet intervalle). Pour pouvoir observer ce qui se passe avant la première rupture et après la dernière, on prendra ici des fenêtres de 150 points de chaque côté. On travaille de plus avec des ruptures en moyenne et en écart-type. On obtient alors la suite $(L_t)$ montrée sur la figure \ref{multi_rupt_llr_ex}.
 	
-	\begin{figure}[h]
-		\includegraphics[scale=0.4]{multi_rupt_llr_ex.png}
+	\begin{figure}[hp]
+%		\vspace{-0.5cm}
+		\includegraphics[height=0.25\textheight,width=\textwidth]{multi_rupt_llr_ex.png}
 		\caption{Suite $(L_t)_{t\in[151,650]}$}
 		\label{multi_rupt_llr_ex}
 	\end{figure}
 	
-	On demande alors à trouver 3 ruptures à partir de cette figure. On commence par détecter le maximum à $\hat{t_0} = 403$, où $L_{\hat{t_0}} = 184,2725$. On exclut alors les valeurs de $L_t$ pour $t \in [253, 553]$. On cherche alors le nouveau maximum : on trouve $\hat{t_1} = 198$ pour $L_{\hat{t_1}} = 105,1670$. On recommence alors la procédure d'exclusion des points dans le voisinage de cette rupture, et on trouve le dernier maximum : $\hat{t_2} = 601$ pour $L_{\hat{t_2}} = 77,0389$. La segmentation obtenue est montrée sur la figure \ref{test_multi_rupt_seg}.
-	
-	\begin{figure}[h]
-		\includegraphics[scale=0.4]{test_multi_rupt_seg.png}
+	\begin{figure}[hp]
+%		\vspace{2cm}
+		\includegraphics[height=0.25\textheight,width=\textwidth]{test_multi_rupt_seg.png}
 		\caption{Signal segmenté par la méthode par fenêtres ; en vert : rupture 1 ; en rouge : rupture 2 ; en noir : rupture 3}
 		\label{test_multi_rupt_seg}
 	\end{figure}
