@@ -799,11 +799,14 @@ nos encadrants seniors Eva Wesfreid et Nicolas Vayatis qui sont à l'origine du 
 	
 	
 	Le problème posé initialement est assez intuitif : à partir de signaux physiologiques, on doit être capable de retrouver algorithmiquement les différentes phases de l'expérience (un aller-retour en marchant). On a vu que le formalisme mathématique qui y était associé était essentiellement statistique, et que les outils utilisés pour résoudre le problème l'étaient également. En particulier, on remarquera que le problème n'est pas résolu de manière exacte, mais approchée. On s'étonnera aussi de la difficulté pour résoudre un problème a priori très intuitif, car très visuel : on peut clairement segmenter à vue de nez les différents signaux observés dans ce rapport !
-	\\ \\
+	\\
+	
 	La partie précédente montre qu'en pratique, l'approche par fenêtres semble donner de meilleurs résultats que l'approche par dichotomie. En effet, si l'on semble avoir un taux d'erreurs plus élevé dans la plupart des cas avec l'approche par fenêtres qu'avec l'approche dichotomique, il importe de voir que le seuil de $10\%$ fixé ici est avant tout arbitraire, et correspond à une qualité que l'on peut espérer sur les signaux physiologiques. Il est plus pertinent d'observer la déviation quadratique moyenne (ou RMSD) pour comparer les deux algorithmes.
-	\\ \\
+	\\
+	
 	En effet, le RMSD est une mesure de l'écart quadratique moyen entre une valeur réelle et son estimateur : il mesure, ici, l'écart quadratique moyen entre la rupture réelle et celle détectée par l'algorithme. On constate alors que les ruptures détectées par l'implémentation par fenêtres sont en moyenne plus proches des ruptures réelles que celles détectées par l'implémentation dichotomique. Ceci peut provenir du fait que l'implémentation dichotomique donne nécessairement des scores moins distingués, car on y quantifie la vraisemblance d'une hypothèse qui est nécessairement fausse (étant donné qu'on cherche de toute façon à détecter plusieurs ruptures).
-	\\ \\
+	\\
+	
 	Notons toutefois que si l'on peut penser effectivement que l'approche par fenêtres fonctionne mieux que celle par dichotomie, il faut néanmoins y ajouter une entrée de plus : le nombre de points minimum entre deux ruptures. Cette donnée, parfois difficile à estimer, joue un rôle très important dans l'approche par fenêtres, et semble être un paramètre crucial pour la précision de l'estimateur. Ceci incite à la modération, et à ne pas rejeter purement et simplement l'approche dichotomique, qui a l'avantage de ne nécessiter qu'une seule entrée : le nombre de ruptures.
 	
 \bibliographystyle{alpha}
