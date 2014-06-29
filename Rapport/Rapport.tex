@@ -147,7 +147,7 @@ nos encadrants seniors Eva Wesfreid et Nicolas Vayatis qui sont à l'origine du 
 	\\
 	
 	La littérature propose une approche statistique du problème : 
-	on considère les signaux comme la réalisation d'une suite (finie) de variables aléatoires.
+	on considère les signaux comme la réalisation d'une suite (finie) de variables aléatoires (possiblement multivariées).
 %Proposer ici des références bibliographiques...
 	\begin{equation}
 		(x_i)_{i \in [\![1\,; N]\!]} = (X_i(\omega))_{i \in [\![1\,; N]\!]}
@@ -412,8 +412,14 @@ nos encadrants seniors Eva Wesfreid et Nicolas Vayatis qui sont à l'origine du 
 	 	On redécoupe alors le signal à partir de la dernière rupture observée : ici, on découpe $(X_t)_{t \in [\hat{t_0}, N]}$ en $(X_t)_{t \in [\hat{t_0}, \hat{t_2}-1]}$ et $(X_t)_{t \in [\hat{t_2}, N]}$, et on réapplique l'algorithme CUSUM de chaque côté, en comparant à chaque fois tous les maximas qui n'ont pas été sélectionnés. On répète cette opération jusqu'à avoir le nombre $R$ de ruptures voulu.
 
 
-
 	\section{Implémentation algorithmique}
+
+
+ \begin{figure}[h]
+ 	\centering
+ 	\includegraphics{diagramme_cusum_dikt}
+ 	\caption{Schéma reprenant l'algorithme de segmentation dichotomique : en vert les ruptures choisies,  en rouge les éligibles ; $t_{2,2}$ vient d'être choisie}
+ \end{figure}
 
 	L'implémentation dichotomique du CUSUM consiste alors à calculer un arbre de la façon suivante :
 	\\
@@ -444,7 +450,7 @@ nos encadrants seniors Eva Wesfreid et Nicolas Vayatis qui sont à l'origine du 
 	Car si on ne choisit pas ses ruptures parentes c'est bien qu'on considère ce début et cette fin comme n'étant pas significatives.
 	\\
 	
-		Observons en détails la manière de procéder sur un exemple (signal \ref{test_multi_mid})
+		Observons en détails la manière de procéder sur un exemple (signal \ref{test_multi_dikt})
 	Puisque le changement est autant en écart-type qu'en moyenne, on utilise la formule \ref{bothchange} pour le CUSUM.
 	
 	Et on l'applique dès le début à tout le signal comme en \ref{mle1}.
@@ -627,7 +633,7 @@ nos encadrants seniors Eva Wesfreid et Nicolas Vayatis qui sont à l'origine du 
 	\end{itemize}
 	
 	Les valeurs de l'espace entre ruptures sont tirés uniforment sur l'intervalle ouvert de $\mathbb R^{+*}$ qui s'étend de l'espace minimal au double de l'espace moyen moins l'espace minimal.
-	Les paramètres d'une distribution sont tout deux -- moyenne et écart-type -- tiré uniformément sur $]0\,;1[$.
+	Les paramètres de chaque distribution normale sont tout deux -- moyenne et écart-type -- tiré uniformément sur $]0\,;1[$.
 	On utilise donc le CUSUM avec la formule \ref{bothchange}.
 	La fenêtre est évidemment de rayon l'espace minimal.
 	
