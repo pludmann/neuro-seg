@@ -424,10 +424,10 @@ nos encadrants seniors Eva Wesfreid et Nicolas Vayatis qui sont à l'origine du 
 	L'implémentation dichotomique du CUSUM consiste alors à calculer un arbre de la façon suivante :
 	\\
 	\begin{itemize}
-	\item Maintenir un ensemble de ruptures choisis initialement vide (les noeuds intérieurs).
+	\item Maintenir un ensemble de ruptures choisies initialement vide (les nœuds intérieurs).
 	\item Maintenir un ensemble de ruptures éligibles qui contient initialement le résultat du CUSUM sur le signal entier (la frontière, les feuilles).
-	\item En extraire la rupture $t_0$ qui a le plus grand ratio de vraissemblance.
-	\item Calculer les deux ruptures -- qui sont alors éligibles -- en applicant le CUSUM entre la rupture choisie précédant chronologiquement $t_0$ et $t_0$ et entre $t_0$ et la rupture choisie suivant chronologiquement $t_0$.
+	\item En extraire la rupture $t_0$ qui a le plus grand ratio de vraisemblance.
+	\item Calculer les deux ruptures -- qui sont alors éligibles -- en appliquant le CUSUM entre la rupture choisie précédant chronologiquement $t_0$ et $t_0$ et entre $t_0$ et la rupture choisie suivant chronologiquement $t_0$.
 	\item Recommencer jusqu'à obtenir le nombre désiré de ruptures.\\
 	\end{itemize}
 	
@@ -439,7 +439,7 @@ nos encadrants seniors Eva Wesfreid et Nicolas Vayatis qui sont à l'origine du 
 	Une version plus naïve serait de calculer un arbre de dichotomie complet de taille le nombre de ruptures directement -- en retirant les moins bonnes si surplus.
 	C'est en tout cas plus évident que d'aller faire éclore la meilleure de feuille de l'arbre de travail à chaque tour de boucle.
 	
-	Sauf que l'arbre complet tombe dans un grave écueuil : plusieurs de ses sous-arbres sera vite confiné à calculer des ruptures là où elles sont minimes.
+	Sauf que l'arbre complet tombe dans un grave écueil : plusieurs de ses sous-arbres sera vite confiné à calculer des ruptures là où elles sont minimes.
 	Par exemple si la racine correspond à la rupture de début de marche tout le sous-arbre de son fils gauche va pointer sur des ruptures dans le régime immobile.
 	\\
 	
@@ -632,7 +632,7 @@ nos encadrants seniors Eva Wesfreid et Nicolas Vayatis qui sont à l'origine du 
 	\item l'espace minimal entre mes ruptures\\
 	\end{itemize}
 	
-	Les valeurs de l'espace entre ruptures sont tirés uniforment sur l'intervalle ouvert de $\mathbb R^{+*}$ qui s'étend de l'espace minimal au double de l'espace moyen moins l'espace minimal.
+	Les valeurs de l'espace entre ruptures sont tirés uniformément sur l'intervalle ouvert de $\mathbb R^{+*}$ qui s'étend de l'espace minimal au double de l'espace moyen moins l'espace minimal.
 	Les paramètres de chaque distribution normale sont tout deux -- moyenne et écart-type -- tiré uniformément sur $]0\,;1[$.
 	On utilise donc le CUSUM avec la formule \ref{bothchange}.
 	La fenêtre est évidemment de rayon l'espace minimal.
@@ -703,7 +703,7 @@ nos encadrants seniors Eva Wesfreid et Nicolas Vayatis qui sont à l'origine du 
 	\caption{Scores calculés sur 100 signaux présentant 6 ruptures à une distance moyenne de 500 points (5s) ; en bleu pour l'implémentation dichotomique, en vert pour l'implémentation par fenêtre}
 	\label{score_min}
 	\end{figure}	
-	L'espace moyen est reglé à 500 points (3 à 4000 points par acquisitions présentant environ 6 ruptures).	
+	L'espace moyen est réglé à 500 points (3 à 4000 points par acquisitions présentant environ 6 ruptures).	
 	Et on fait varier le nombre de points de ruptures de 1 à 20, ce qui va largement plus loin que la demande réelle.
 	\\
 	
@@ -762,8 +762,7 @@ nos encadrants seniors Eva Wesfreid et Nicolas Vayatis qui sont à l'origine du 
 			\caption{Segmentation par fenêtre de rayon 100 (1s)}
 			\label{}
 		\end{subfigure}
-	\caption{6 ruptures sur un premier signal physiologique : en bleu l'accélétation enregistrée à la ceinture ; en vert l'accélération enregistrée au pied droit ; en rouge la rotation propre enregistrée à la ceinture}
-	\label{score_min}
+	\caption{6 ruptures sur un premier signal physiologique : en bleu l'accélération enregistrée à la ceinture ; en vert l'accélération enregistrée au pied droit ; en rouge la rotation propre enregistrée à la ceinture}
 	\end{figure}
 	
 	\begin{figure}[hp]
@@ -779,7 +778,6 @@ nos encadrants seniors Eva Wesfreid et Nicolas Vayatis qui sont à l'origine du 
 			\label{}
 		\end{subfigure}
 	\caption{5 ruptures sur un deuxième signal physiologique : en bleu l'accélétation enregistrée à la ceinture ; en vert l'accélération enregistrée au pied droit ; en rouge la rotation propre enregistrée à la ceinture}
-	\label{score_min}
 	\end{figure}
 	
 	\begin{figure}[hp]
@@ -794,8 +792,7 @@ nos encadrants seniors Eva Wesfreid et Nicolas Vayatis qui sont à l'origine du 
 			\caption{Segmentation par fenêtre de rayon 100 (1s)}
 			\label{}
 		\end{subfigure}
-	\caption{6 ruptures sur un deuxième signal physiologique : en bleu l'accélétation enregistrée à la ceinture ; en vert l'accélération enregistrée au pied droit ; en rouge la rotation propre enregistrée à la ceinture}
-	\label{score_min}
+	\caption{6 ruptures sur un deuxième signal physiologique : en bleu l'accélération enregistrée à la ceinture ; en vert l'accélération enregistrée au pied droit ; en rouge la rotation propre enregistrée à la ceinture}
 	\end{figure}
 	
 		
